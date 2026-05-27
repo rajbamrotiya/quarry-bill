@@ -19,6 +19,18 @@
                     <flux:sidebar.item icon="users" :href="route('clients.index')" :current="request()->routeIs('clients.*')" wire:navigate>
                         {{ __('Clients') }}
                     </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="ticket" :href="route('receipts.index')" :current="request()->routeIs('receipts.*')" wire:navigate>
+                        {{ __('Receipts') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="tag" :href="route('material-types.index')" :current="request()->routeIs('material-types.*')" wire:navigate>
+                        {{ __('Material Types') }}
+                    </flux:sidebar.item>
+
+                    <flux:sidebar.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>
+                        {{ __('Reports') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
