@@ -12,6 +12,13 @@ class MaterialType extends Model
 
     protected $fillable = [
         'name',
+        'hsn_code',
+        'unit_rate',
+        'other_information',
+    ];
+
+    protected $casts = [
+        'unit_rate' => 'decimal:2',
     ];
 
     public function receipts(): HasMany

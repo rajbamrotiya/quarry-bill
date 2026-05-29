@@ -21,6 +21,13 @@ class ClientFactory extends Factory
             'name' => $this->faker->name(),
             'mobile_number' => $this->faker->phoneNumber(),
             'email' => $this->faker->unique()->safeEmail(),
+            'address' => $this->faker->address(),
+            'gst_number' => $this->faker->numerify('###############'),
+            'pan_number' => $this->faker->lexify('?????') . $this->faker->numerify('####') . $this->faker->lexify('?'),
+            'country' => 'India',
+            'state' => 'Gujarat',
+            'district' => 'Ahmedabad',
+            'other_information' => $this->faker->sentence(),
         ];
     }
 }

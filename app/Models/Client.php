@@ -16,6 +16,13 @@ class Client extends Model
         'name',
         'mobile_number',
         'email',
+        'address',
+        'gst_number',
+        'pan_number',
+        'country',
+        'state',
+        'district',
+        'other_information',
     ];
 
     public function receipts(): HasMany

@@ -31,7 +31,8 @@ new #[Title('Material Types')] class extends Component {
     {
         return MaterialType::query()
             ->when($this->search, function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%');
+                $query->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('hsn_code', 'like', '%' . $this->search . '%');
             })
             ->orderBy('name')
             ->paginate(10);
@@ -55,6 +56,8 @@ new #[Title('Material Types')] class extends Component {
         <flux:table :paginate="$this->materialTypes">
             <flux:table.columns>
                 <flux:table.column>{{ __('Name') }}</flux:table.column>
+                <flux:table.column>{{ __('HSN Code') }}</flux:table.column>
+                <flux:table.column>{{ __('Unit Rate') }}</flux:table.column>
                 <flux:table.column>{{ __('Created At') }}</flux:table.column>
                 <flux:table.column></flux:table.column>
             </flux:table.columns>
@@ -63,6 +66,8 @@ new #[Title('Material Types')] class extends Component {
                 @foreach ($this->materialTypes as $type)
                     <flux:table.row :key="$type->id">
                         <flux:table.cell class="font-medium text-zinc-800 dark:text-zinc-200">{{ $type->name }}</flux:table.cell>
+                        <flux:table.cell>{{ $type->hsn_code ?? '-' }}</flux:table.cell>
+                        <flux:table.cell>{{ $type->unit_rate ? '₹' . number_format($type->unit_rate, 2) : '-' }}</flux:table.cell>
                         <flux:table.cell>{{ $type->created_at->format('M d, Y') }}</flux:table.cell>
                         <flux:table.cell>
                             <div class="flex justify-end gap-2">

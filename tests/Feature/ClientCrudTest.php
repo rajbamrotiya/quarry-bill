@@ -18,11 +18,11 @@ test('can view clients list', function () {
 });
 
 test('can search clients', function () {
-    Client::factory()->create(['name' => 'John Doe']);
-    Client::factory()->create(['name' => 'Jane Smith']);
+    Client::factory()->create(['name' => 'John Doe', 'district' => 'Ahmedabad']);
+    Client::factory()->create(['name' => 'Jane Smith', 'district' => 'Surat']);
 
     Livewire::test('pages::clients.index')
-        ->set('search', 'John')
+        ->set('search', 'Ahmedabad')
         ->assertSee('John Doe')
         ->assertDontSee('Jane Smith');
 });
@@ -32,6 +32,8 @@ test('can create a client', function () {
         ->set('name', 'New Client')
         ->set('mobile_number', '1234567890')
         ->set('email', 'new@client.com')
+        ->set('state', 'Gujarat')
+        ->set('district', 'Ahmedabad')
         ->call('save')
         ->assertHasNoErrors()
         ->assertRedirect(route('clients.index'));
@@ -40,6 +42,7 @@ test('can create a client', function () {
         'name' => 'New Client',
         'mobile_number' => '1234567890',
         'email' => 'new@client.com',
+        'district' => 'Ahmedabad',
     ]);
 });
 
@@ -51,10 +54,11 @@ test('validation works for client creation', function () {
 });
 
 test('can update a client', function () {
-    $client = Client::factory()->create(['name' => 'Old Name']);
+    $client = Client::factory()->create(['name' => 'Old Name', 'district' => 'Ahmedabad']);
 
     Livewire::test('pages::clients.edit', ['client' => $client])
         ->set('name', 'Updated Name')
+        ->set('district', 'Surat')
         ->call('save')
         ->assertHasNoErrors()
         ->assertRedirect(route('clients.index'));
@@ -62,6 +66,7 @@ test('can update a client', function () {
     $this->assertDatabaseHas('clients', [
         'id' => $client->id,
         'name' => 'Updated Name',
+        'district' => 'Surat',
     ]);
 });
 
@@ -80,10 +85,12 @@ test('can view client details', function () {
     $client = Client::factory()->create([
         'name' => 'Detail View Client',
         'email' => 'detail@view.com',
+        'gst_number' => '123456789012345',
     ]);
 
     $this->get(route('clients.show', $client))
         ->assertOk()
         ->assertSee('Detail View Client')
-        ->assertSee('detail@view.com');
+        ->assertSee('detail@view.com')
+        ->assertSee('123456789012345');
 });
