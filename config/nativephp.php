@@ -13,7 +13,7 @@ return [
      * usually in the form of a reverse domain name.
      * For example: com.nativephp.app
      */
-    'app_id' => env('NATIVEPHP_APP_ID', 'com.nativephp.app'),
+    'app_id' => env('NATIVEPHP_APP_ID', 'com.quarrybill.app'),
 
     /**
      * If your application allows deep linking, you can specify the scheme
@@ -24,22 +24,22 @@ return [
      * This would allow you to open your application using a URL like:
      * nativephp://some/path
      */
-    'deeplink_scheme' => env('NATIVEPHP_DEEPLINK_SCHEME'),
+    'deeplink_scheme' => env('NATIVEPHP_DEEPLINK_SCHEME', 'quarrybill'),
 
     /**
      * The author of your application.
      */
-    'author' => env('NATIVEPHP_APP_AUTHOR'),
+    'author' => env('NATIVEPHP_APP_AUTHOR', 'Quarry Bill Team'),
 
     /**
      * The copyright notice for your application.
      */
-    'copyright' => env('NATIVEPHP_APP_COPYRIGHT'),
+    'copyright' => env('NATIVEPHP_APP_COPYRIGHT', 'Copyright © ' . date('Y')),
 
     /**
      * The description of your application.
      */
-    'description' => env('NATIVEPHP_APP_DESCRIPTION', 'An awesome app built with NativePHP'),
+    'description' => env('NATIVEPHP_APP_DESCRIPTION', 'Professional Billing and Management System for Quarries'),
 
     /**
      * The Website of your application.
