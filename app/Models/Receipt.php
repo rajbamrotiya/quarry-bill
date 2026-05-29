@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Receipt extends Model
 {
@@ -46,8 +47,42 @@ class Receipt extends Model
         return $this->belongsTo(MaterialType::class);
     }
 
+    public function histories(): HasMany
+    {
+        return $this->hasMany(ReceiptHistory::class)->latest();
+    }
+
     protected static function booted(): void
     {
+        static::created(function (Receipt $receipt) {
+            $receipt->histories()->create([
+                'user_id' => auth()->id(),
+                'event' => 'created',
+                'changes' => $receipt->getAttributes(),
+            ]);
+        });
+
+        static::updated(function (Receipt $receipt) {
+            $changes = [];
+            foreach ($receipt->getChanges() as $key => $value) {
+                if ($key === 'updated_at') {
+                    continue;
+                }
+                $changes[$key] = [
+                    'old' => $receipt->getOriginal($key),
+                    'new' => $value,
+                ];
+            }
+
+            if (! empty($changes)) {
+                $receipt->histories()->create([
+                    'user_id' => auth()->id(),
+                    'event' => 'updated',
+                    'changes' => $changes,
+                ]);
+            }
+        });
+
         static::creating(function (Receipt $receipt) {
             if (empty($receipt->pass_number)) {
                 $date = $receipt->date ? Carbon::parse($receipt->date) : now();

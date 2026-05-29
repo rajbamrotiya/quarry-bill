@@ -26,6 +26,7 @@ new #[Title('Receipts')] class extends Component {
     {
         return Receipt::query()
             ->with(['client', 'materialType'])
+            ->withCount('histories')
             ->when($this->search, function ($query) {
                 $query->whereHas('client', function ($q) {
                     $q->where('name', 'like', '%' . $this->search . '%');
@@ -66,7 +67,18 @@ new #[Title('Receipts')] class extends Component {
             <flux:table.rows>
                 @foreach ($this->receipts as $receipt)
                     <flux:table.row :key="$receipt->id">
-                        <flux:table.cell class="font-medium">#{{ $receipt->pass_number ?: str_pad($receipt->id, 10, '0', STR_PAD_LEFT) }}</flux:table.cell>
+                        <flux:table.cell class="font-medium">
+                            <div class="flex items-center gap-2">
+                                #{{ $receipt->pass_number ?: str_pad($receipt->id, 10, '0', STR_PAD_LEFT) }}
+                                @if($receipt->histories_count > 1)
+                                    <flux:tooltip content="{{ __('This receipt has been updated :count times', ['count' => $receipt->histories_count - 1]) }}" position="top">
+                                        <flux:badge size="sm" color="amber" icon="pencil-square" class="px-1.5 py-0">
+                                            {{ $receipt->histories_count - 1 }}
+                                        </flux:badge>
+                                    </flux:tooltip>
+                                @endif
+                            </div>
+                        </flux:table.cell>
                         <flux:table.cell>{{ $receipt->client->name }}</flux:table.cell>
                         <flux:table.cell>{{ $receipt->vehicle_number }}</flux:table.cell>
                         <flux:table.cell>{{ $receipt->materialType->name }}</flux:table.cell>
