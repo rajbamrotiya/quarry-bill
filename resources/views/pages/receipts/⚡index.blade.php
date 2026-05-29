@@ -14,13 +14,6 @@ new #[Title('Receipts')] class extends Component {
     #[Url]
     public string $search = '';
 
-    public function delete(Receipt $receipt): void
-    {
-        $receipt->delete();
-
-        Flux::toast(__('Receipt deleted successfully.'));
-    }
-
     #[Computed]
     public function receipts()
     {
@@ -89,26 +82,6 @@ new #[Title('Receipts')] class extends Component {
                                 <flux:button icon="arrow-down-tray" variant="ghost" size="sm" :href="route('receipts.pdf', $receipt)" target="_blank" />
                                 <flux:button icon="eye" variant="ghost" size="sm" :href="route('receipts.show', $receipt)" wire:navigate />
                                 <flux:button icon="pencil-square" variant="ghost" size="sm" :href="route('receipts.edit', $receipt)" wire:navigate />
-                                <flux:modal.trigger name="delete-receipt-{{ $receipt->id }}">
-                                    <flux:button icon="trash" variant="ghost" size="sm" />
-                                </flux:modal.trigger>
-
-                                <flux:modal name="delete-receipt-{{ $receipt->id }}" class="max-w-sm">
-                                    <div class="space-y-6">
-                                        <div>
-                                            <flux:heading size="lg">{{ __('Delete Receipt') }}</flux:heading>
-                                            <flux:subheading>{{ __('Are you sure you want to delete this receipt? This action cannot be undone.') }}</flux:subheading>
-                                        </div>
-
-                                        <div class="flex gap-2">
-                                            <flux:spacer />
-                                            <flux:modal.close>
-                                                <flux:button variant="ghost">{{ __('Cancel') }}</flux:button>
-                                            </flux:modal.close>
-                                            <flux:button type="submit" variant="danger" wire:click="delete({{ $receipt->id }})">{{ __('Delete') }}</flux:button>
-                                        </div>
-                                    </div>
-                                </flux:modal>
                             </div>
                         </flux:table.cell>
                     </flux:table.row>
