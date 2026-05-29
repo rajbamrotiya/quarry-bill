@@ -44,6 +44,9 @@ new #[Title('Edit Receipt')] class extends Component {
     #[Validate('nullable|in:cash,online')]
     public string $payment_type = '';
 
+    #[Validate('nullable|string|max:255')]
+    public string $payment_remark = '';
+
     public string $remarks = '';
 
     public function mount(Receipt $receipt): void
@@ -59,6 +62,7 @@ new #[Title('Edit Receipt')] class extends Component {
         $this->tare_weight = (float) $receipt->tare_weight;
         $this->payment_value = $receipt->payment_value ? (float) $receipt->payment_value : null;
         $this->payment_type = $receipt->payment_type ?? '';
+        $this->payment_remark = $receipt->payment_remark ?? '';
         $this->remarks = $receipt->remarks ?? '';
         $this->calculateNetWeight();
     }
@@ -109,6 +113,7 @@ new #[Title('Edit Receipt')] class extends Component {
             'remarks' => $this->remarks,
             'payment_value' => $this->payment_value,
             'payment_type' => $this->payment_type,
+            'payment_remark' => $this->payment_remark,
         ]);
 
         Flux::toast(__('Receipt updated successfully.'));
@@ -136,15 +141,14 @@ new #[Title('Edit Receipt')] class extends Component {
                 <flux:heading size="sm" class="font-bold text-zinc-400 uppercase tracking-widest">{{ __('Client Selection') }}</flux:heading>
             </div>
 
-            <flux:field>
-                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-2 tracking-tight">{{ __('Select Client') }}</flux:label>
-                <flux:select wire:model="client_id" searchable :placeholder="__('-- Choose a client --')">
-                    @foreach ($this->clients as $client)
-                        <flux:select.option :value="$client->id">{{ $client->name }}</flux:select.option>
-                    @endforeach
-                </flux:select>
-                <flux:error name="client_id" />
-            </flux:field>
+            <livewire:autocomplete 
+                wire:model="client_id" 
+                :model="\App\Models\Client::class" 
+                :placeholder="__('-- Choose a client --')" 
+                :label="__('Select Client')" 
+            />
+
+            <flux:error name="client_id" />
         </flux:card>
 
         {{-- Main Form Grid --}}
@@ -160,15 +164,13 @@ new #[Title('Edit Receipt')] class extends Component {
                 <flux:error name="vehicle_number" />
             </flux:field>
 
-            <flux:field>
-                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Material Type') }}</flux:label>
-                <flux:select wire:model="material_type_id" :placeholder="__('Select Material')">
-                    @foreach ($this->materialTypes as $type)
-                        <flux:select.option :value="$type->id">{{ $type->name }}</flux:select.option>
-                    @endforeach
-                </flux:select>
-                <flux:error name="material_type_id" />
-            </flux:field>
+            <livewire:autocomplete 
+                wire:model="material_type_id" 
+                :model="\App\Models\MaterialType::class" 
+                :placeholder="__('Select Material')" 
+                :label="__('Material Type')" 
+            />
+            <flux:error name="material_type_id" />
 
             <flux:field>
                 <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Royalty Number') }}</flux:label>
@@ -227,7 +229,7 @@ new #[Title('Edit Receipt')] class extends Component {
         </div>
 
         {{-- Payment Section --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <flux:field>
                 <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Payment Value') }}</flux:label>
                 <flux:input type="number" step="0.01" wire:model="payment_value" :placeholder="__('0.00')" icon="currency-dollar" />
@@ -241,6 +243,17 @@ new #[Title('Edit Receipt')] class extends Component {
                     <flux:select.option value="online">{{ __('Online') }}</flux:select.option>
                 </flux:select>
                 <flux:error name="payment_type" />
+            </flux:field>
+
+            <flux:field>
+                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Payment Remark') }}</flux:label>
+                <flux:input wire:model="payment_remark" :placeholder="__('e.g. Paid by GPay')" list="payment-remarks-list" />
+                <datalist id="payment-remarks-list">
+                    @foreach(\App\Models\Receipt::whereNotNull('payment_remark')->distinct()->pluck('payment_remark') as $suggestion)
+                        <option value="{{ $suggestion }}">
+                    @endforeach
+                </datalist>
+                <flux:error name="payment_remark" />
             </flux:field>
         </div>
 

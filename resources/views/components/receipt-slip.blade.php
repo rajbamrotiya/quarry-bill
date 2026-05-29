@@ -25,7 +25,7 @@
     $finalTare = $receipt ? $receipt->tare_weight : $tare;
     $finalNet = $receipt ? $receipt->net_weight : $net;
     $finalRemarks = $receipt ? $receipt->remarks : $remarks;
-    $finalSlipNumber = $receipt ? '#' . str_pad($receipt->id, 10, '0', STR_PAD_LEFT) : $slipNumber;
+    $finalSlipNumber = $receipt ? ($receipt->pass_number ?: '#' . str_pad($receipt->id, 10, '0', STR_PAD_LEFT)) : $slipNumber;
 @endphp
 
 <div class="receipt-box {{ $copyClass }} {{ $preview ? 'preview-mode' : '' }}">

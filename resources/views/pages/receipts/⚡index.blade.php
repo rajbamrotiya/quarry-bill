@@ -31,7 +31,7 @@ new #[Title('Receipts')] class extends Component {
                     $q->where('name', 'like', '%' . $this->search . '%');
                 })
                 ->orWhere('vehicle_number', 'like', '%' . $this->search . '%')
-                ->orWhere('id', 'like', '%' . $this->search . '%');
+                ->orWhere('pass_number', 'like', '%' . $this->search . '%');
             })
             ->latest()
             ->paginate(10);
@@ -66,7 +66,7 @@ new #[Title('Receipts')] class extends Component {
             <flux:table.rows>
                 @foreach ($this->receipts as $receipt)
                     <flux:table.row :key="$receipt->id">
-                        <flux:table.cell class="font-medium">#{{ $receipt->id }}</flux:table.cell>
+                        <flux:table.cell class="font-medium">#{{ $receipt->pass_number ?: str_pad($receipt->id, 10, '0', STR_PAD_LEFT) }}</flux:table.cell>
                         <flux:table.cell>{{ $receipt->client->name }}</flux:table.cell>
                         <flux:table.cell>{{ $receipt->vehicle_number }}</flux:table.cell>
                         <flux:table.cell>{{ $receipt->materialType->name }}</flux:table.cell>

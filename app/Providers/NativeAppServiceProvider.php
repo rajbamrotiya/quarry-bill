@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use Native\Desktop\Facades\Window;
-use Native\Desktop\Facades\Menu;
 use Native\Desktop\Contracts\ProvidesPhpIni;
+use Native\Desktop\Facades\Menu;
+use Native\Desktop\Facades\Window;
 
 class NativeAppServiceProvider implements ProvidesPhpIni
 {
@@ -17,6 +17,7 @@ class NativeAppServiceProvider implements ProvidesPhpIni
         Menu::create(
             Menu::app(),
             Menu::make(
+                Menu::route('invoices.create', 'New Invoice', 'CmdOrCtrl+Shift+N'),
                 Menu::route('receipts.create', 'New Receipt', 'CmdOrCtrl+N'),
                 Menu::route('clients.create', 'New Client', 'CmdOrCtrl+Shift+C'),
                 Menu::separator(),
@@ -24,6 +25,7 @@ class NativeAppServiceProvider implements ProvidesPhpIni
             )->label('File'),
             Menu::make(
                 Menu::route('dashboard', 'Dashboard', 'CmdOrCtrl+D'),
+                Menu::route('invoices.index', 'Invoices', 'CmdOrCtrl+I'),
                 Menu::route('receipts.index', 'Receipts', 'CmdOrCtrl+R'),
                 Menu::route('clients.index', 'Clients', 'CmdOrCtrl+C'),
                 Menu::route('reports.index', 'Reports', 'CmdOrCtrl+P'),

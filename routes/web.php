@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\DailyReportController;
+use App\Http\Controllers\DispatchReportController;
 use App\Http\Controllers\ReceiptPdfController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,7 +32,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::livewire('/', 'pages::reports.index')->name('index');
-        Route::get('/daily-pdf', [DailyReportController::class, 'generate'])->name('daily-pdf');
+        Route::get('/daily-pdf', [DispatchReportController::class, 'daily'])->name('daily-pdf');
+        Route::get('/monthly-pdf', [DispatchReportController::class, 'monthly'])->name('monthly-pdf');
     });
 });
 
