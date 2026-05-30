@@ -55,21 +55,21 @@ new #[Title('Material Types')] class extends Component {
     <flux:card class="overflow-hidden p-0">
         <flux:table :paginate="$this->materialTypes">
             <flux:table.columns>
-                <flux:table.column>{{ __('Name') }}</flux:table.column>
+                <flux:table.column class="px-6">{{ __('Name') }}</flux:table.column>
                 <flux:table.column>{{ __('HSN Code') }}</flux:table.column>
                 <flux:table.column>{{ __('Unit Rate') }}</flux:table.column>
                 <flux:table.column>{{ __('Created At') }}</flux:table.column>
-                <flux:table.column></flux:table.column>
+                <flux:table.column class="px-6"></flux:table.column>
             </flux:table.columns>
 
             <flux:table.rows>
                 @foreach ($this->materialTypes as $type)
                     <flux:table.row :key="$type->id">
-                        <flux:table.cell class="font-medium text-zinc-800 dark:text-zinc-200">{{ $type->name }}</flux:table.cell>
+                        <flux:table.cell class="px-6 font-medium text-zinc-800 dark:text-zinc-200">{{ $type->name }}</flux:table.cell>
                         <flux:table.cell>{{ $type->hsn_code ?? '-' }}</flux:table.cell>
                         <flux:table.cell>{{ $type->unit_rate ? '₹' . number_format($type->unit_rate, 2) : '-' }}</flux:table.cell>
                         <flux:table.cell>{{ $type->created_at->format('M d, Y') }}</flux:table.cell>
-                        <flux:table.cell>
+                        <flux:table.cell class="px-6">
                             <div class="flex justify-end gap-2">
                                 <flux:button icon="pencil-square" variant="ghost" size="sm" :href="route('material-types.edit', $type)" wire:navigate />
                                 

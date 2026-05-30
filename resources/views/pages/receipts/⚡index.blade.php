@@ -48,19 +48,19 @@ new #[Title('Receipts')] class extends Component {
     <flux:card class="overflow-hidden p-0">
         <flux:table :paginate="$this->receipts">
             <flux:table.columns>
-                <flux:table.column>{{ __('Pass #') }}</flux:table.column>
+                <flux:table.column class="px-6">{{ __('Pass #') }}</flux:table.column>
                 <flux:table.column>{{ __('Client') }}</flux:table.column>
                 <flux:table.column>{{ __('Vehicle') }}</flux:table.column>
                 <flux:table.column>{{ __('Material') }}</flux:table.column>
                 <flux:table.column>{{ __('Date') }}</flux:table.column>
                 <flux:table.column>{{ __('Net Weight') }}</flux:table.column>
-                <flux:table.column></flux:table.column>
+                <flux:table.column class="px-6"></flux:table.column>
             </flux:table.columns>
 
             <flux:table.rows>
                 @foreach ($this->receipts as $receipt)
                     <flux:table.row :key="$receipt->id">
-                        <flux:table.cell class="font-medium">
+                        <flux:table.cell class="px-6 font-medium">
                             <div class="flex items-center gap-2">
                                 #{{ $receipt->pass_number ?: str_pad($receipt->id, 10, '0', STR_PAD_LEFT) }}
                                 @if($receipt->histories_count > 1)
@@ -77,7 +77,7 @@ new #[Title('Receipts')] class extends Component {
                         <flux:table.cell>{{ $receipt->materialType->name }}</flux:table.cell>
                         <flux:table.cell>{{ $receipt->date->format('M d, Y') }}</flux:table.cell>
                         <flux:table.cell>{{ $receipt->net_weight }} Ton</flux:table.cell>
-                        <flux:table.cell>
+                        <flux:table.cell class="px-6">
                             <div class="flex justify-end gap-2">
                                 <flux:button icon="arrow-down-tray" variant="ghost" size="sm" :href="route('receipts.pdf', $receipt)" target="_blank" />
                                 <flux:button icon="eye" variant="ghost" size="sm" :href="route('receipts.show', $receipt)" wire:navigate />
