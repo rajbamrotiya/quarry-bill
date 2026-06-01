@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\DispatchReportController;
-use App\Http\Controllers\NativeDatabaseController;
 use App\Http\Controllers\ReceiptPdfController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,8 +35,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/daily-pdf', [DispatchReportController::class, 'daily'])->name('daily-pdf');
         Route::get('/monthly-pdf', [DispatchReportController::class, 'monthly'])->name('monthly-pdf');
     });
-
-    Route::get('/native/database/export', [NativeDatabaseController::class, 'export'])->name('native.database.export');
 });
 
 require __DIR__.'/settings.php';
