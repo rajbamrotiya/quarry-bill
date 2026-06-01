@@ -31,9 +31,9 @@ class Receipt extends Model
 
     protected $casts = [
         'date' => 'date',
-        'gross_weight' => 'decimal:3',
-        'tare_weight' => 'decimal:3',
-        'net_weight' => 'decimal:3',
+        'gross_weight' => 'integer',
+        'tare_weight' => 'integer',
+        'net_weight' => 'integer',
         'payment_value' => 'decimal:2',
     ];
 
@@ -103,7 +103,7 @@ class Receipt extends Model
         });
 
         static::saving(function (Receipt $receipt) {
-            $receipt->net_weight = max(0, (float) $receipt->gross_weight - (float) $receipt->tare_weight);
+            $receipt->net_weight = max(0, (int) $receipt->gross_weight - (int) $receipt->tare_weight);
         });
     }
 }

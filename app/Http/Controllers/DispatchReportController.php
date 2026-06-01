@@ -60,4 +60,41 @@ class DispatchReportController extends Controller
 
         return $pdf->stream($filename);
     }
+
+    public function clientMaterialSummary(Request $request)
+    {
+        $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
+        ]);
+
+        $client = Client::findOrFail($request->client_id);
+        [$year, $monthNum] = explode('-', $request->month);
+        $monthName = Carbon::createFromDate($year, $monthNum)->format('F Y');
+
+        $receipts = Receipt::with('materialType')
+            ->where('client_id', $client->id)
+            ->whereYear('date', $year)
+            ->whereMonth('date', $monthNum)
+            ->get();
+
+        $materials = $receipts->groupBy('material_type_id')->map(function ($group) {
+            return [
+                'material_name' => $group->first()->materialType->name,
+                'count' => $group->count(),
+                'total_weight' => $group->sum('net_weight'),
+                'total_payment' => $group->sum('payment_value'),
+            ];
+        })->values();
+
+        $pdf = Pdf::loadView('pdf.client-material-summary', [
+            'materials' => $materials,
+            'client' => $client,
+            'month' => $monthName,
+        ]);
+
+        $filename = "material-summary-{$client->name}-{$request->month}.pdf";
+
+        return $pdf->stream($filename);
+    }
 }

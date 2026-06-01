@@ -39,14 +39,14 @@ test('can create a receipt', function () {
         ->set('client_id', $client->id)
         ->set('vehicle_number', 'GJ-01-XX-9999')
         ->set('material_type_id', $material->id)
-        ->set('gross_weight', 30.5)
-        ->set('tare_weight', 10.2)
+        ->set('gross_weight', 30500)
+        ->set('tare_weight', 10000)
         ->call('save')
         ->assertHasNoErrors();
 
     $this->assertDatabaseHas('receipts', [
         'vehicle_number' => 'GJ-01-XX-9999',
-        'net_weight' => 20.3,
+        'net_weight' => 20500,
     ]);
 });
 
@@ -59,8 +59,8 @@ test('validation works for receipt creation', function () {
 
 test('tare weight must be less than gross weight', function () {
     Livewire::test('pages::receipts.create')
-        ->set('gross_weight', 10)
-        ->set('tare_weight', 20)
+        ->set('gross_weight', 10000)
+        ->set('tare_weight', 20000)
         ->call('save')
         ->assertHasErrors(['tare_weight']);
 });

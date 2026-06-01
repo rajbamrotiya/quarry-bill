@@ -10,7 +10,6 @@ use Flux\Flux;
 new #[Title('Edit Client')] class extends Component {
     public Client $client;
 
-    #[Validate('required|string|max:255')]
     public string $name = '';
 
     #[Validate('nullable|string|max:20')]
@@ -53,6 +52,13 @@ new #[Title('Edit Client')] class extends Component {
         $this->state = $client->state ?? 'Gujarat';
         $this->district = $client->district ?? '';
         $this->other_information = $client->other_information ?? '';
+    }
+
+    public function rules()
+    {
+        return [
+            'name' => 'required|string|max:255|unique:clients,name,' . $this->client->id,
+        ];
     }
 
     public function states(): array

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Attributes\Modelable;
 use Livewire\Component;
+use Flux\Flux;
 
 class Autocomplete extends Component
 {
@@ -69,6 +70,8 @@ class Autocomplete extends Component
         $this->search = $name;
         $this->selectedName = $name;
         $this->showDropdown = false;
+        
+        Flux::toast(__('Selected ') . $name);
     }
 
     public function clear()
@@ -82,7 +85,7 @@ class Autocomplete extends Component
     public function render()
     {
         $results = [];
-        if ($this->showDropdown && strlen($this->search) >= 1) {
+        if (strlen($this->search) >= 1) {
             $results = $this->model::where('name', 'like', '%'.$this->search.'%')
                 ->limit(10)
                 ->get();

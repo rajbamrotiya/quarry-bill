@@ -1,5 +1,34 @@
 <div>
-    <div class="relative" x-data="{ open: @entangle('showDropdown') }" @click.away="open = false">
+    <div class="relative" 
+        x-data="{ 
+            open: @entangle('showDropdown'),
+            highlightedIndex: 0,
+            focusNext() {
+                let count = this.$refs.listbox ? this.$refs.listbox.querySelectorAll('button').length : 0;
+                if (this.highlightedIndex < count - 1) {
+                    this.highlightedIndex++;
+                }
+            },
+            focusPrevious() {
+                if (this.highlightedIndex > 0) {
+                    this.highlightedIndex--;
+                }
+            },
+            selectHighlighted() {
+                if (this.open && this.$refs.listbox) {
+                    let btns = this.$refs.listbox.querySelectorAll('button');
+                    if(btns[this.highlightedIndex]) {
+                        btns[this.highlightedIndex].click();
+                    }
+                }
+            }
+        }" 
+        @click.away="open = false"
+        @keydown.arrow-down.prevent="if(open) focusNext()"
+        @keydown.arrow-up.prevent="if(open) focusPrevious()"
+        @keydown.enter="if(open) { $event.preventDefault(); selectHighlighted(); }"
+        x-init="$watch('open', value => { if(value) highlightedIndex = 0 })"
+    >
         <flux:field>
             @if($label)
                 <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-2 tracking-tight">{{ $label }}</flux:label>
@@ -10,7 +39,8 @@
                     wire:model.live.debounce.300ms="search" 
                     :placeholder="$placeholder"
                     autocomplete="off"
-                    @focus="open = true"
+                    @focus="open = true; $el.select()"
+                    @keydown.escape="open = false"
                     class="pr-10"
                 />
                 
@@ -34,12 +64,15 @@
             style="display: none;"
         >
             @if(count($results) > 0)
-                <div class="py-1">
-                    @foreach($results as $result)
+                <div class="py-1" x-ref="listbox">
+                    @foreach($results as $index => $result)
                         <button 
                             type="button"
                             wire:click="selectItem('{{ $result->id }}', '{{ addslashes($result->name) }}')"
-                            class="w-full text-left px-4 py-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 focus:outline-none transition-colors duration-150 group"
+                            @click="open = false"
+                            class="w-full text-left px-4 py-2.5 focus:outline-none transition-colors duration-150 group"
+                            x-bind:class="highlightedIndex === {{ $index }} ? 'bg-zinc-100 dark:bg-zinc-700' : 'hover:bg-zinc-100 dark:hover:bg-zinc-700'"
+                            @mouseenter="highlightedIndex = {{ $index }}"
                         >
                             <span class="text-sm font-medium text-zinc-700 dark:text-zinc-200 group-hover:text-zinc-900 dark:group-hover:text-white">{{ $result->name }}</span>
                         </button>

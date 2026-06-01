@@ -82,15 +82,15 @@
         <tr>
             <td style="border-right: none;">
                 <div class="weight-label">GROSS WEIGHT</div>
-                <div class="weight-value">{{ number_format($finalGross, 3) }} <span>tons</span></div>
+                <div class="weight-value">{{ number_format($finalGross) }} <span>kg</span></div>
             </td>
             <td>
                 <div class="weight-label">TARE WEIGHT</div>
-                <div class="weight-value">{{ number_format($finalTare, 3) }} <span>tons</span></div>
+                <div class="weight-value">{{ number_format($finalTare) }} <span>kg</span></div>
             </td>
             <td class="net-weight-cell">
                 <div class="weight-label">NET PRODUCT WEIGHT</div>
-                <div class="weight-value">{{ number_format($finalNet, 3) }} <span>tons</span></div>
+                <div class="weight-value">{{ number_format($finalNet) }} <span>kg</span></div>
             </td>
         </tr>
     </table>

@@ -28,12 +28,12 @@ new #[Title('Edit Receipt')] class extends Component {
     public string $time = '';
 
     #[Validate('required|numeric|min:0')]
-    public float $gross_weight = 0;
+    public int $gross_weight = 0;
 
     #[Validate('required|numeric|min:0|lt:gross_weight')]
-    public float $tare_weight = 0;
+    public int $tare_weight = 0;
 
-    public float $net_weight = 0;
+    public int $net_weight = 0;
 
     #[Validate('nullable|string|max:255')]
     public string $royalty_number = '';
@@ -58,8 +58,8 @@ new #[Title('Edit Receipt')] class extends Component {
         $this->royalty_number = $receipt->royalty_number ?? '';
         $this->date = $receipt->date->format('Y-m-d');
         $this->time = $receipt->time;
-        $this->gross_weight = (float) $receipt->gross_weight;
-        $this->tare_weight = (float) $receipt->tare_weight;
+        $this->gross_weight = (int) $receipt->gross_weight;
+        $this->tare_weight = (int) $receipt->tare_weight;
         $this->payment_value = $receipt->payment_value ? (float) $receipt->payment_value : null;
         $this->payment_type = $receipt->payment_type ?? '';
         $this->payment_remark = $receipt->payment_remark ?? '';
@@ -82,7 +82,7 @@ new #[Title('Edit Receipt')] class extends Component {
 
     protected function calculateNetWeight(): void
     {
-        $this->net_weight = max(0, (float)$this->gross_weight - (float)$this->tare_weight);
+        $this->net_weight = max(0, (int)$this->gross_weight - (int)$this->tare_weight);
     }
 
     #[Computed]
@@ -196,15 +196,15 @@ new #[Title('Edit Receipt')] class extends Component {
             gross: @entangle('gross_weight').live, 
             tare: @entangle('tare_weight').live,
             get net() { 
-                let val = (parseFloat(this.gross) || 0) - (parseFloat(this.tare) || 0);
-                return val > 0 ? val.toFixed(3) : '0.000';
+                let val = (parseInt(this.gross, 10) || 0) - (parseInt(this.tare, 10) || 0);
+                return val > 0 ? val.toString() : '0';
             }
         }">
             <flux:card class="flex flex-col items-center justify-center py-8 bg-zinc-50/30">
                 <flux:heading size="sm" class="uppercase text-[10px] font-bold text-zinc-400 mb-4 tracking-tight">{{ __('Gross Weight') }}</flux:heading>
                 <div class="flex flex-col items-center">
-                    <input type="number" step="0.001" x-model="gross" class="w-full text-center text-3xl font-black bg-transparent border-none focus:ring-0" />
-                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">{{ __('Tons') }}</span>
+                    <input type="number" step="1" x-model="gross" class="w-full text-center text-3xl font-black bg-transparent border-none focus:ring-0" />
+                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">{{ __('KG') }}</span>
                 </div>
                 <flux:error name="gross_weight" />
             </flux:card>
@@ -212,8 +212,8 @@ new #[Title('Edit Receipt')] class extends Component {
             <flux:card class="flex flex-col items-center justify-center py-8 bg-zinc-50/30">
                 <flux:heading size="sm" class="uppercase text-[10px] font-bold text-zinc-400 mb-4 tracking-tight">{{ __('Tare Weight') }}</flux:heading>
                 <div class="flex flex-col items-center">
-                    <input type="number" step="0.001" x-model="tare" class="w-full text-center text-3xl font-black bg-transparent border-none focus:ring-0" />
-                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">{{ __('Tons') }}</span>
+                    <input type="number" step="1" x-model="tare" class="w-full text-center text-3xl font-black bg-transparent border-none focus:ring-0" />
+                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">{{ __('KG') }}</span>
                 </div>
                 <flux:error name="tare_weight" />
             </flux:card>
@@ -222,7 +222,7 @@ new #[Title('Edit Receipt')] class extends Component {
                 <flux:heading size="sm" class="uppercase text-[10px] font-bold text-blue-100 mb-4 tracking-tight">{{ __('Net Weight') }}</flux:heading>
                 <div class="flex flex-col items-center">
                     <span class="text-4xl font-black" x-text="net"></span>
-                    <span class="text-[10px] font-bold text-blue-100 uppercase tracking-widest mt-1">{{ __('Tons') }}</span>
+                    <span class="text-[10px] font-bold text-blue-100 uppercase tracking-widest mt-1">{{ __('KG') }}</span>
                     <span class="text-[9px] font-medium text-blue-200 mt-2 uppercase tracking-tighter">{{ __('Total Calculated') }}</span>
                 </div>
             </div>

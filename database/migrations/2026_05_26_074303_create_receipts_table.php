@@ -18,9 +18,9 @@ return new class extends Migration
             $table->foreignId('material_type_id')->constrained()->cascadeOnDelete();
             $table->date('date');
             $table->time('time');
-            $table->decimal('gross_weight', 10, 3);
-            $table->decimal('tare_weight', 10, 3);
-            $table->decimal('net_weight', 10, 3);
+            $table->integer('gross_weight');
+            $table->integer('tare_weight');
+            $table->integer('net_weight');
             $table->text('remarks')->nullable();
             $table->timestamps();
         });

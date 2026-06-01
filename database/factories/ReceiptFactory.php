@@ -19,8 +19,8 @@ class ReceiptFactory extends Factory
      */
     public function definition(): array
     {
-        $gross = $this->faker->randomFloat(3, 10, 40);
-        $tare = $this->faker->randomFloat(3, 5, 9);
+        $gross = fake()->numberBetween(15000, 50000);
+        $tare = fake()->numberBetween(5000, 15000);
 
         return [
             'client_id' => Client::factory(),

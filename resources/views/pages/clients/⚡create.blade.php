@@ -8,7 +8,7 @@ use Livewire\Attributes\Title;
 use Flux\Flux;
 
 new #[Title('Create Client')] class extends Component {
-    #[Validate('required|string|max:255')]
+    #[Validate('required|string|max:255|unique:clients,name')]
     public string $name = '';
 
     #[Validate('nullable|string|max:20')]

@@ -147,16 +147,16 @@ new #[Title('Receipt Details')] class extends Component {
                         <div class="flex justify-between items-end border-b border-zinc-100 dark:border-zinc-800 pb-3">
                             <flux:text class="text-xs uppercase font-bold text-zinc-400">{{ __('Gross Weight') }}</flux:text>
                             <div class="text-right">
-                                <span class="text-xl font-bold">{{ number_format($receipt->gross_weight, 3) }}</span>
-                                <span class="text-[10px] text-zinc-400 ml-0.5 uppercase">Tons</span>
+                                <span class="text-xl font-bold">{{ number_format($receipt->gross_weight) }}</span>
+                                <span class="text-[10px] text-zinc-400 ml-0.5 uppercase">KG</span>
                             </div>
                         </div>
 
                         <div class="flex justify-between items-end border-b border-zinc-100 dark:border-zinc-800 pb-3">
                             <flux:text class="text-xs uppercase font-bold text-zinc-400">{{ __('Tare Weight') }}</flux:text>
                             <div class="text-right">
-                                <span class="text-xl font-bold">{{ number_format($receipt->tare_weight, 3) }}</span>
-                                <span class="text-[10px] text-zinc-400 ml-0.5 uppercase">Tons</span>
+                                <span class="text-xl font-bold">{{ number_format($receipt->tare_weight) }}</span>
+                                <span class="text-[10px] text-zinc-400 ml-0.5 uppercase">KG</span>
                             </div>
                         </div>
 
@@ -164,8 +164,8 @@ new #[Title('Receipt Details')] class extends Component {
                             <div class="flex justify-between items-end">
                                 <flux:text class="text-xs uppercase font-black text-emerald-600 dark:text-emerald-400">{{ __('Net Weight') }}</flux:text>
                                 <div class="text-right">
-                                    <span class="text-3xl font-black text-emerald-600 dark:text-emerald-400">{{ number_format($receipt->net_weight, 3) }}</span>
-                                    <span class="text-xs text-emerald-500 ml-1 uppercase">Tons</span>
+                                    <span class="text-3xl font-black text-emerald-600 dark:text-emerald-400">{{ number_format($receipt->net_weight) }}</span>
+                                    <span class="text-xs text-emerald-500 ml-1 uppercase">KG</span>
                                 </div>
                             </div>
                         </div>

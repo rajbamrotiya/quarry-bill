@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::livewire('/', 'pages::reports.index')->name('index');
         Route::get('/daily-pdf', [DispatchReportController::class, 'daily'])->name('daily-pdf');
         Route::get('/monthly-pdf', [DispatchReportController::class, 'monthly'])->name('monthly-pdf');
+        Route::get('/client-material-summary-pdf', [DispatchReportController::class, 'clientMaterialSummary'])->name('client-material-summary-pdf');
     });
 });
 

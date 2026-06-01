@@ -94,7 +94,8 @@
                 <th>Royalty No</th>
                 <th width="10%">Payment Type</th>
                 <th width="12%" class="text-right">Payment Value</th>
-                <th width="10%" class="text-right">Weight (Tons)</th>
+                <th>Payment Remark</th>
+                <th width="10%" class="text-right">Weight (KG)</th>
             </tr>
         </thead>
         <tbody>
@@ -113,11 +114,12 @@
                             -
                         @endif
                     </td>
-                    <td class="text-right font-bold">{{ number_format($receipt->net_weight, 3) }}</td>
+                    <td>{{ $receipt->payment_remark ?: '-' }}</td>
+                    <td class="text-right font-bold">{{ number_format($receipt->net_weight) }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 20px;">No dispatches found for this date.</td>
+                    <td colspan="9" style="text-align: center; padding: 20px;">No dispatches found for this date.</td>
                 </tr>
             @endforelse
         </tbody>
@@ -135,7 +137,7 @@
             </div>
             <div class="summary-row" style="border-top: 1px solid #111827; margin-top: 5px; padding-top: 5px;">
                 <span class="summary-label">Total Weight:</span>
-                <span class="summary-value">{{ number_format($receipts->sum('net_weight'), 3) }} Tons</span>
+                <span class="summary-value">{{ number_format($receipts->sum('net_weight')) }} KG</span>
             </div>
         </div>
     @endif

@@ -2,11 +2,11 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Monthly Dispatch Report - {{ $client->name }} - {{ $month }}</title>
+    <title>Material Summary - {{ $client->name }} - {{ $month }}</title>
     <style>
         @page {
             margin: 1cm;
-            size: A4 landscape;
+            size: A4 portrait;
         }
         body {
             font-family: 'Helvetica', Arial, sans-serif;
@@ -35,8 +35,9 @@
             color: #4b5563;
         }
         .client-info {
-            margin-bottom: 10px;
-            font-size: 11px;
+            text-align: center;
+            font-size: 12px;
+            margin-bottom: 15px;
         }
         table {
             width: 100%;
@@ -46,32 +47,31 @@
         th {
             background-color: #f3f4f6;
             text-align: left;
-            padding: 8px;
+            padding: 10px 8px;
             border: 1px solid #d1d5db;
             text-transform: uppercase;
             font-size: 9px;
             font-weight: bold;
         }
         td {
-            padding: 8px;
+            padding: 10px 8px;
             border: 1px solid #d1d5db;
             vertical-align: middle;
+            font-size: 11px;
         }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
         .font-bold { font-weight: bold; }
         .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            margin-top: 30px;
             border-top: 1px solid #d1d5db;
-            padding-top: 5px;
+            padding-top: 10px;
             font-size: 8px;
             color: #6b7280;
         }
         .summary-box {
             float: right;
-            width: 300px;
+            width: 250px;
             border: 2px solid #111827;
             padding: 10px;
             background: #f9fafb;
@@ -82,69 +82,71 @@
         }
         .summary-label { float: left; font-weight: bold; }
         .summary-value { float: right; font-weight: 900; }
-        .page-break { page-break-after: always; }
     </style>
 </head>
 <body>
     <div class="header">
         <div class="company-name">QUARRY BILL</div>
-        <div class="report-title">MONTHLY DISPATCH REPORT</div>
-        <div class="client-info">
-            Client: <strong>{{ $client->name }}</strong> |
-            Month: <strong>{{ $month }}</strong>
-        </div>
+        <div class="report-title">CLIENT MATERIAL SUMMARY</div>
+        <div>Month: <strong>{{ $month }}</strong></div>
+    </div>
+
+    <div class="client-info">
+        Client Name: <strong class="font-bold">{{ $client->name }}</strong>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th width="4%">NO</th>
-                <th width="12%">Pass No</th>
-                <th width="10%">Date</th>
-                <th width="8%">Time</th>
-                <th>Material</th>
-                <th width="15%">Vehicle Number</th>
-                <th width="15%">Royalty No</th>
-                <th width="12%" class="text-right">Net Weight (T)</th>
+                <th width="5%" class="text-center">NO</th>
+                <th>Material Type</th>
+                <th width="15%" class="text-center">Total Slips</th>
+                <th width="20%" class="text-right">Total Payment</th>
+                <th width="20%" class="text-right">Total Weight (KG)</th>
             </tr>
         </thead>
         <tbody>
-            @php $totalWeight = 0; @endphp
-            @forelse($receipts as $index => $receipt)
-                @php $totalWeight += $receipt->net_weight; @endphp
+            @forelse($materials as $index => $material)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td class="font-bold">{{ $receipt->pass_number }}</td>
-                    <td>{{ \Carbon\Carbon::parse($receipt->date)->format('d-m-Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($receipt->time)->format('h:i A') }}</td>
-                    <td>{{ $receipt->materialType->name }}</td>
-                    <td class="font-bold">{{ $receipt->vehicle_number }}</td>
-                    <td>{{ $receipt->royalty_number ?: '-' }}</td>
-                    <td class="text-right font-bold">{{ number_format($receipt->net_weight) }}</td>
+                    <td class="font-bold">{{ $material['material_name'] }}</td>
+                    <td class="text-center">{{ $material['count'] }}</td>
+                    <td class="text-right">
+                        @if($material['total_payment'] > 0)
+                            {{ number_format($material['total_payment'], 2) }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td class="text-right font-bold">{{ number_format($material['total_weight']) }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 20px;">No dispatches found for this client in selected month.</td>
+                    <td colspan="5" style="text-align: center; padding: 20px;">No dispatches found for this client and month.</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 
-    @if($receipts->count() > 0)
+    @if($materials->count() > 0)
         <div class="summary-box">
             <div class="summary-row">
-                <span class="summary-label">Total Dispatch Count:</span>
-                <span class="summary-value">{{ $receipts->count() }}</span>
+                <span class="summary-label">Total Slips:</span>
+                <span class="summary-value">{{ $materials->sum('count') }}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Total Payment:</span>
+                <span class="summary-value">{{ number_format($materials->sum('total_payment'), 2) }}</span>
             </div>
             <div class="summary-row" style="border-top: 1px solid #111827; margin-top: 5px; padding-top: 5px;">
-                <span class="summary-label">Grand Total Weight:</span>
-                <span class="summary-value" style="font-size: 14px;">{{ number_format($totalWeight) }} KG</span>
+                <span class="summary-label">Total Weight:</span>
+                <span class="summary-value">{{ number_format($materials->sum('total_weight')) }} KG</span>
             </div>
         </div>
     @endif
 
     <div class="footer">
-        Generated on: {{ now()->format('M d, Y H:i:s') }} | QUARRY BILL Dispatch System | Page 1
+        Generated on: {{ now()->format('M d, Y H:i:s') }} | QUARRY BILL Dispatch System
     </div>
 </body>
 </html>

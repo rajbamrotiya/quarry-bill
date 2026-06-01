@@ -30,6 +30,11 @@ new #[Title('Receipts')] class extends Component {
             ->latest()
             ->paginate(10);
     }
+
+    public function delete(Receipt $receipt)
+    {
+        $receipt->delete();
+    }
 };
 ?>
 
@@ -76,7 +81,7 @@ new #[Title('Receipts')] class extends Component {
                         <flux:table.cell>{{ $receipt->vehicle_number }}</flux:table.cell>
                         <flux:table.cell>{{ $receipt->materialType->name }}</flux:table.cell>
                         <flux:table.cell>{{ $receipt->date->format('M d, Y') }}</flux:table.cell>
-                        <flux:table.cell>{{ $receipt->net_weight }} Ton</flux:table.cell>
+                        <flux:table.cell>{{ $receipt->net_weight }} KG</flux:table.cell>
                         <flux:table.cell class="px-6">
                             <div class="flex justify-end gap-2">
                                 <flux:button icon="arrow-down-tray" variant="ghost" size="sm" :href="route('receipts.pdf', $receipt)" target="_blank" />

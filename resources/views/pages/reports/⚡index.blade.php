@@ -43,6 +43,21 @@ new #[Title('Dispatch Reports')] class extends Component {
         $this->js("window.open('$url', '_blank');");
     }
 
+    public function generateClientMaterialSummary(): void
+    {
+        $this->validate([
+            'client_id' => 'required|exists:clients,id',
+            'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
+        ]);
+
+        $url = route('reports.client-material-summary-pdf', [
+            'client_id' => $this->client_id,
+            'month' => $this->month
+        ]);
+        
+        $this->js("window.open('$url', '_blank');");
+    }
+
     #[Computed]
     public function clients()
     {
@@ -88,7 +103,7 @@ new #[Title('Dispatch Reports')] class extends Component {
                 </div>
                 <div class="p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-100 dark:border-zinc-800 text-center">
                     <flux:text class="uppercase text-[9px] font-bold text-zinc-400 tracking-widest mb-1">{{ __('Net Weight') }}</flux:text>
-                    <div class="text-xl font-black text-emerald-600">{{ number_format($dailyStats->weight, 3) }}<span class="text-[10px] ml-0.5">T</span></div>
+                    <div class="text-xl font-black text-emerald-600">{{ number_format($dailyStats->weight) }}<span class="text-[10px] ml-0.5">KG</span></div>
                 </div>
             </div>
 
@@ -139,14 +154,21 @@ new #[Title('Dispatch Reports')] class extends Component {
                 </div>
                 <div class="p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-100 dark:border-zinc-800 text-center">
                     <flux:text class="uppercase text-[9px] font-bold text-zinc-400 tracking-widest mb-1">{{ __('Month Weight') }}</flux:text>
-                    <div class="text-xl font-black text-indigo-600">{{ $monthlyStats ? number_format($monthlyStats->weight, 3) : '0.000' }}<span class="text-[10px] ml-0.5">T</span></div>
+                    <div class="text-xl font-black text-indigo-600">{{ $monthlyStats ? number_format($monthlyStats->weight) : '0' }}<span class="text-[10px] ml-0.5">KG</span></div>
                 </div>
             </div>
 
-            <flux:button wire:click="generateMonthly" variant="primary" class="w-full bg-zinc-900 font-bold gap-2">
-                <flux:icon name="arrow-down-tray" class="size-4" />
-                {{ __('Generate Monthly PDF') }}
-            </flux:button>
+            <div class="space-y-3">
+                <flux:button wire:click="generateMonthly" variant="primary" class="w-full bg-zinc-900 font-bold gap-2">
+                    <flux:icon name="arrow-down-tray" class="size-4" />
+                    {{ __('Generate Monthly PDF') }}
+                </flux:button>
+
+                <flux:button wire:click="generateClientMaterialSummary" class="w-full font-bold gap-2">
+                    <flux:icon name="document-chart-bar" class="size-4" />
+                    {{ __('Generate Material Summary PDF') }}
+                </flux:button>
+            </div>
         </flux:card>
     </div>
 </div>
