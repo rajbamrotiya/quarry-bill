@@ -50,7 +50,7 @@ new #[Title('Buy Reports')] class extends Component {
             'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
         ]);
 
-        $url = route('buy-reports.supplier-buy-material-summary-pdf', [
+        $url = route('buy-reports.supplier-material-summary-pdf', [
             'supplier_id' => $this->supplier_id,
             'month' => $this->month
         ]);
