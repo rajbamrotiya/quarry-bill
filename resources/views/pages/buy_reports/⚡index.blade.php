@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\Receipt;
-use App\Models\Client;
+use App\Models\BuyReceipt;
+use App\Models\Supplier;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Computed;
 
-new #[Title('Dispatch Reports')] class extends Component {
+new #[Title('Buy Reports')] class extends Component {
     public string $date = '';
-    public string $client_id = '';
+    public string $supplier_id = '';
     public string $month = '';
 
     public function mount(): void
@@ -23,7 +23,7 @@ new #[Title('Dispatch Reports')] class extends Component {
             'date' => 'required|date',
         ]);
 
-        $url = route('reports.daily-pdf', ['date' => $this->date]);
+        $url = route('buy-reports.daily-pdf', ['date' => $this->date]);
         
         $this->js("window.open('$url', '_blank');");
     }
@@ -31,27 +31,27 @@ new #[Title('Dispatch Reports')] class extends Component {
     public function generateMonthly(): void
     {
         $this->validate([
-            'client_id' => 'required|exists:clients,id',
+            'supplier_id' => 'required|exists:suppliers,id',
             'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
         ]);
 
-        $url = route('reports.monthly-pdf', [
-            'client_id' => $this->client_id,
+        $url = route('buy-reports.monthly-pdf', [
+            'supplier_id' => $this->supplier_id,
             'month' => $this->month
         ]);
         
         $this->js("window.open('$url', '_blank');");
     }
 
-    public function generateClientMaterialSummary(): void
+    public function generateSupplierMaterialSummary(): void
     {
         $this->validate([
-            'client_id' => 'required|exists:clients,id',
+            'supplier_id' => 'required|exists:suppliers,id',
             'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
         ]);
 
-        $url = route('reports.client-material-summary-pdf', [
-            'client_id' => $this->client_id,
+        $url = route('buy-reports.supplier-buy-material-summary-pdf', [
+            'supplier_id' => $this->supplier_id,
             'month' => $this->month
         ]);
         
@@ -59,9 +59,9 @@ new #[Title('Dispatch Reports')] class extends Component {
     }
 
     #[Computed]
-    public function clients()
+    public function suppliers()
     {
-        return Client::orderBy('name')->get();
+        return Supplier::orderBy('name')->get();
     }
 };
 ?>
@@ -72,8 +72,8 @@ new #[Title('Dispatch Reports')] class extends Component {
             <flux:icon name="chart-bar" class="size-6" variant="outline" />
         </div>
         <div>
-            <flux:heading size="xl" class="font-bold">{{ __('Dispatch Reports') }}</flux:heading>
-            <flux:subheading>{{ __('Generate daily or monthly dispatch reports') }}</flux:subheading>
+            <flux:heading size="xl" class="font-bold">{{ __('Buy Reports') }}</flux:heading>
+            <flux:subheading>{{ __('Generate daily or monthly buy reports') }}</flux:subheading>
         </div>
     </div>
 
@@ -93,7 +93,7 @@ new #[Title('Dispatch Reports')] class extends Component {
 
             {{-- Daily Stats --}}
             @php
-                $dailyStats = \App\Models\Receipt::whereDate('date', $date ?: now()->toDateString())->selectRaw('count(*) as count, sum(net_weight) as weight')->first();
+                $dailyStats = \App\Models\BuyReceipt::whereDate('date', $date ?: now()->toDateString())->selectRaw('count(*) as count, sum(net_weight) as weight')->first();
             @endphp
             
             <div class="grid grid-cols-2 gap-4">
@@ -120,12 +120,12 @@ new #[Title('Dispatch Reports')] class extends Component {
             </div>
 
             <livewire:autocomplete 
-                wire:model.live="client_id" 
-                :model="\App\Models\Client::class" 
-                :placeholder="__('-- Choose Client --')" 
-                :label="__('Select Client')" 
+                wire:model.live="supplier_id" 
+                :model="\App\Models\Supplier::class" 
+                :placeholder="__('-- Choose Supplier --')" 
+                :label="__('Select Supplier')" 
             />
-            <flux:error name="client_id" />
+            <flux:error name="supplier_id" />
             
             <flux:field>
                 <flux:label>{{ __('Select Month') }}</flux:label>
@@ -136,9 +136,9 @@ new #[Title('Dispatch Reports')] class extends Component {
             {{-- Monthly Stats --}}
             @php
                 $monthlyStats = null;
-                if ($client_id && $month) {
+                if ($supplier_id && $month) {
                     [$year, $monthNum] = explode('-', $month);
-                    $monthlyStats = \App\Models\Receipt::where('client_id', $client_id)
+                    $monthlyStats = \App\Models\BuyReceipt::where('supplier_id', $supplier_id)
                         ->whereYear('date', $year)
                         ->whereMonth('date', $monthNum)
                         ->selectRaw('count(*) as count, sum(net_weight) as weight')
@@ -162,7 +162,7 @@ new #[Title('Dispatch Reports')] class extends Component {
                     {{ __('Generate Monthly PDF') }}
                 </flux:button>
 
-                <flux:button wire:click="generateClientMaterialSummary" variant="primary" icon="document-chart-bar" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold">
+                <flux:button wire:click="generateSupplierMaterialSummary" variant="primary" icon="document-chart-bar" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold">
                     {{ __('Generate Material Summary PDF') }}
                 </flux:button>
             </div>

@@ -11,25 +11,39 @@
             </flux:sidebar.header>
 
             <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Platform')" class="grid">
+                <flux:sidebar.group :heading="__('Dispatch (Sell)')" class="grid bg-blue-50/50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100/50 dark:border-blue-800/30">
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
-
                     <flux:sidebar.item icon="users" :href="route('clients.index')" :current="request()->routeIs('clients.*')" wire:navigate>
                         {{ __('Clients') }}
                     </flux:sidebar.item>
-
                     <flux:sidebar.item icon="ticket" :href="route('receipts.index')" :current="request()->routeIs('receipts.*')" wire:navigate>
-                        {{ __('Receipts') }}
+                        {{ __('Dispatch Receipts') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>
+                        {{ __('Dispatch Reports') }}
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
 
+                <flux:sidebar.group :heading="__('Procurement (Buy)')" class="grid bg-emerald-50/50 dark:bg-emerald-900/20 p-3 rounded-xl border border-emerald-100/50 dark:border-emerald-800/30 mt-4">
+                    <flux:sidebar.item icon="shopping-cart" :href="route('buy-dashboard')" :current="request()->routeIs('buy-dashboard')" wire:navigate>
+                        {{ __('Buy Dashboard') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="truck" :href="route('suppliers.index')" :current="request()->routeIs('suppliers.*')" wire:navigate>
+                        {{ __('Suppliers') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="shopping-bag" :href="route('buy-receipts.index')" :current="request()->routeIs('buy-receipts.*')" wire:navigate>
+                        {{ __('Buy Receipts') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="chart-pie" :href="route('buy-reports.index')" :current="request()->routeIs('buy-reports.*')" wire:navigate>
+                        {{ __('Buy Reports') }}
+                    </flux:sidebar.item>
+                </flux:sidebar.group>
+
+                <flux:sidebar.group :heading="__('Master Data')" class="grid bg-amber-50/50 dark:bg-amber-900/20 p-3 rounded-xl border border-amber-100/50 dark:border-amber-800/30 mt-4">
                     <flux:sidebar.item icon="tag" :href="route('material-types.index')" :current="request()->routeIs('material-types.*')" wire:navigate>
                         {{ __('Material Types') }}
-                    </flux:sidebar.item>
-
-                    <flux:sidebar.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>
-                        {{ __('Reports') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>

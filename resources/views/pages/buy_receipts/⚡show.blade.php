@@ -1,17 +1,17 @@
 <?php
 
-use App\Models\Receipt;
+use App\Models\BuyReceipt;
 use Livewire\Component;
 use Livewire\Attributes\Title;
 
-new #[Title('Receipt Details')] class extends Component {
-    public Receipt $receipt;
+new #[Title('BuyReceipt Details')] class extends Component {
+    public BuyReceipt $buy_receipt;
 
     public string $tab = 'details';
 
-    public function mount(Receipt $receipt): void
+    public function mount(BuyReceipt $buy_receipt): void
     {
-        $this->receipt = $receipt->load(['client', 'materialType', 'histories.user']);
+        $this->buy_receipt = $buy_receipt->load(['supplier', 'materialType', 'histories.user']);
     }
 
     public function selectTab(string $tab): void
@@ -25,21 +25,21 @@ new #[Title('Receipt Details')] class extends Component {
     {{-- Header Section --}}
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b pb-6">
         <div class="flex items-center gap-4">
-            <flux:button icon="arrow-left" variant="ghost" :href="route('receipts.index')" wire:navigate />
+            <flux:button icon="arrow-left" variant="ghost" :href="route('buy-receipts.index')" wire:navigate />
             <div>
                 <div class="flex items-center gap-2">
-                    <flux:heading size="xl" class="font-black">{{ __('Receipt Details') }}</flux:heading>
-                    <flux:badge color="indigo" size="sm" inset="top" class="font-mono">#{{ $receipt->pass_number ?: str_pad($receipt->id, 10, '0', STR_PAD_LEFT) }}</flux:badge>
+                    <flux:heading size="xl" class="font-black">{{ __('BuyReceipt Details') }}</flux:heading>
+                    <flux:badge color="indigo" size="sm" inset="top" class="font-mono">#{{ $buy_receipt->pass_number ?: str_pad($buy_receipt->id, 10, '0', STR_PAD_LEFT) }}</flux:badge>
                 </div>
                 <flux:subheading>{{ __('Detailed information and modification logs') }}</flux:subheading>
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <flux:button icon="arrow-down-tray" variant="ghost" :href="route('receipts.pdf', $receipt)" target="_blank">
+            <flux:button icon="arrow-down-tray" variant="ghost" :href="route('buy-receipts.pdf', $buy_receipt)" target="_blank">
                 {{ __('Download PDF') }}
             </flux:button>
-            <flux:button icon="pencil-square" variant="primary" :href="route('receipts.edit', $receipt)" wire:navigate class="bg-indigo-600 border-indigo-600">
-                {{ __('Edit Receipt') }}
+            <flux:button icon="pencil-square" variant="primary" :href="route('buy-receipts.edit', $buy_receipt)" wire:navigate class="bg-indigo-600 border-indigo-600">
+                {{ __('Edit BuyReceipt') }}
             </flux:button>
         </div>
     </div>
@@ -59,8 +59,8 @@ new #[Title('Receipt Details')] class extends Component {
         >
             <flux:icon name="clock" class="size-4" />
             {{ __('Update History') }}
-            @if($receipt->histories->count() > 1)
-                <flux:badge size="sm" color="indigo" class="px-1.5 py-0">{{ $receipt->histories->count() - 1 }}</flux:badge>
+            @if($buy_receipt->histories->count() > 1)
+                <flux:badge size="sm" color="indigo" class="px-1.5 py-0">{{ $buy_receipt->histories->count() - 1 }}</flux:badge>
             @endif
         </button>
     </div>
@@ -77,11 +77,11 @@ new #[Title('Receipt Details')] class extends Component {
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
                         <flux:field>
-                            <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Consignee / Client') }}</flux:label>
+                            <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Consignee / Supplier') }}</flux:label>
                             <div class="flex flex-col">
-                                <flux:text class="text-lg font-bold text-zinc-900 dark:text-white">{{ $receipt->client->name }}</flux:text>
-                                @if($receipt->client->gst_number)
-                                    <flux:text class="text-xs text-zinc-500 font-mono">GSTIN: {{ $receipt->client->gst_number }}</flux:text>
+                                <flux:text class="text-lg font-bold text-zinc-900 dark:text-white">{{ $buy_receipt->supplier->name }}</flux:text>
+                                @if($buy_receipt->supplier->gst_number)
+                                    <flux:text class="text-xs text-zinc-500 font-mono">GSTIN: {{ $buy_receipt->supplier->gst_number }}</flux:text>
                                 @endif
                             </div>
                         </flux:field>
@@ -90,7 +90,7 @@ new #[Title('Receipt Details')] class extends Component {
                             <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Material Type') }}</flux:label>
                             <div class="flex items-center gap-2">
                                 <div class="size-2 rounded-full bg-indigo-500"></div>
-                                <flux:text class="text-lg font-bold">{{ $receipt->materialType->name }}</flux:text>
+                                <flux:text class="text-lg font-bold">{{ $buy_receipt->materialType->name }}</flux:text>
                             </div>
                         </flux:field>
 
@@ -98,14 +98,14 @@ new #[Title('Receipt Details')] class extends Component {
                             <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Vehicle Number') }}</flux:label>
                             <div class="flex items-center gap-2">
                                 <flux:icon name="truck" class="size-4 text-zinc-400" />
-                                <flux:text class="text-lg font-black uppercase tracking-tight">{{ $receipt->vehicle_number }}</flux:text>
+                                <flux:text class="text-lg font-black uppercase tracking-tight">{{ $buy_receipt->vehicle_number }}</flux:text>
                             </div>
                         </flux:field>
 
                         <flux:field>
                             <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Royalty Number') }}</flux:label>
-                            @if($receipt->royalty_number)
-                                <flux:badge color="amber" class="font-mono text-sm px-3 py-1">{{ $receipt->royalty_number }}</flux:badge>
+                            @if($buy_receipt->royalty_number)
+                                <flux:badge color="amber" class="font-mono text-sm px-3 py-1">{{ $buy_receipt->royalty_number }}</flux:badge>
                             @else
                                 <flux:text class="text-zinc-400 italic">{{ __('None') }}</flux:text>
                             @endif
@@ -115,7 +115,7 @@ new #[Title('Receipt Details')] class extends Component {
                             <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Dispatch Date') }}</flux:label>
                             <div class="flex items-center gap-2">
                                 <flux:icon name="calendar" class="size-4 text-zinc-400" />
-                                <flux:text class="font-bold">{{ $receipt->date->format('l, M d, Y') }}</flux:text>
+                                <flux:text class="font-bold">{{ $buy_receipt->date->format('l, M d, Y') }}</flux:text>
                             </div>
                         </flux:field>
 
@@ -123,19 +123,19 @@ new #[Title('Receipt Details')] class extends Component {
                             <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Dispatch Time') }}</flux:label>
                             <div class="flex items-center gap-2">
                                 <flux:icon name="clock" class="size-4 text-zinc-400" />
-                                <flux:text class="font-bold">{{ \Carbon\Carbon::parse($receipt->time)->format('h:i A') }}</flux:text>
+                                <flux:text class="font-bold">{{ \Carbon\Carbon::parse($buy_receipt->time)->format('h:i A') }}</flux:text>
                             </div>
                         </flux:field>
                     </div>
                 </flux:card>
 
-                @if($receipt->remarks)
+                @if($buy_receipt->remarks)
                     <flux:card>
                         <div class="flex items-center gap-2 mb-4 border-b pb-2">
                             <flux:icon name="chat-bubble-left-right" class="size-5 text-zinc-400" />
                             <flux:heading size="lg">{{ __('Remarks / Notes') }}</flux:heading>
                         </div>
-                        <flux:text class="italic text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ $receipt->remarks }}</flux:text>
+                        <flux:text class="italic text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ $buy_receipt->remarks }}</flux:text>
                     </flux:card>
                 @endif
             </div>
@@ -153,7 +153,7 @@ new #[Title('Receipt Details')] class extends Component {
                         <div class="flex justify-between items-end border-b border-zinc-100 dark:border-zinc-800 pb-3">
                             <flux:text class="text-xs uppercase font-bold text-zinc-400">{{ __('Gross Weight') }}</flux:text>
                             <div class="text-right">
-                                <span class="text-xl font-bold">{{ number_format($receipt->gross_weight) }}</span>
+                                <span class="text-xl font-bold">{{ number_format($buy_receipt->gross_weight) }}</span>
                                 <span class="text-[10px] text-zinc-400 ml-0.5 uppercase">KG</span>
                             </div>
                         </div>
@@ -161,7 +161,7 @@ new #[Title('Receipt Details')] class extends Component {
                         <div class="flex justify-between items-end border-b border-zinc-100 dark:border-zinc-800 pb-3">
                             <flux:text class="text-xs uppercase font-bold text-zinc-400">{{ __('Tare Weight') }}</flux:text>
                             <div class="text-right">
-                                <span class="text-xl font-bold">{{ number_format($receipt->tare_weight) }}</span>
+                                <span class="text-xl font-bold">{{ number_format($buy_receipt->tare_weight) }}</span>
                                 <span class="text-[10px] text-zinc-400 ml-0.5 uppercase">KG</span>
                             </div>
                         </div>
@@ -170,7 +170,7 @@ new #[Title('Receipt Details')] class extends Component {
                             <div class="flex justify-between items-end">
                                 <flux:text class="text-xs uppercase font-black text-emerald-600 dark:text-emerald-400">{{ __('Net Weight') }}</flux:text>
                                 <div class="text-right">
-                                    <span class="text-3xl font-black text-emerald-600 dark:text-emerald-400">{{ number_format($receipt->net_weight) }}</span>
+                                    <span class="text-3xl font-black text-emerald-600 dark:text-emerald-400">{{ number_format($buy_receipt->net_weight) }}</span>
                                     <span class="text-xs text-emerald-500 ml-1 uppercase">KG</span>
                                 </div>
                             </div>
@@ -178,35 +178,7 @@ new #[Title('Receipt Details')] class extends Component {
                     </div>
                 </flux:card>
 
-                {{-- Payment Card --}}
-                <flux:card class="{{ $receipt->payment_type === 'cash' ? 'border-l-4 border-l-emerald-500' : 'border-l-4 border-l-blue-500' }}">
-                    <div class="flex items-center gap-2 mb-6 border-b pb-4">
-                        <flux:icon name="banknotes" class="size-5 text-zinc-400" />
-                        <flux:heading size="lg">{{ __('Payment Details') }}</flux:heading>
-                    </div>
-
-                    <div class="space-y-4">
-                        <flux:field>
-                            <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Payment Type') }}</flux:label>
-                            <div class="flex items-center gap-2">
-                                @if($receipt->payment_type === 'cash')
-                                    <flux:badge color="emerald" icon="currency-dollar" size="sm" class="uppercase font-bold">{{ __('Cash') }}</flux:badge>
-                                @elseif($receipt->payment_type === 'online')
-                                    <flux:badge color="blue" icon="globe-alt" size="sm" class="uppercase font-bold">{{ __('Online') }}</flux:badge>
-                                @else
-                                    <flux:text class="text-zinc-400 italic">{{ __('Not Specified') }}</flux:text>
-                                @endif
-                            </div>
-                        </flux:field>
-
-                        <flux:field>
-                            <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Amount Paid') }}</flux:label>
-                            <div class="text-2xl font-black text-zinc-900 dark:text-white">
-                                ₹ {{ number_format($receipt->payment_value ?: 0, 2) }}
-                            </div>
-                        </flux:field>
-                    </div>
-                </flux:card>
+                
             </div>
         </div>
     @else
@@ -214,11 +186,11 @@ new #[Title('Receipt Details')] class extends Component {
             <flux:card class="p-0 overflow-hidden">
                 <div class="p-6 border-b border-zinc-100 dark:border-zinc-800">
                     <flux:heading size="lg">{{ __('Modification Log') }}</flux:heading>
-                    <flux:subheading>{{ __('Timeline of all changes made to this receipt') }}</flux:subheading>
+                    <flux:subheading>{{ __('Timeline of all changes made to this buy_receipt') }}</flux:subheading>
                 </div>
 
                 <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
-                    @forelse($receipt->histories as $history)
+                    @forelse($buy_receipt->histories as $history)
                         <div class="p-6">
                             <div class="flex items-start gap-4">
                                 <div class="mt-1">
@@ -237,7 +209,7 @@ new #[Title('Receipt Details')] class extends Component {
                                     <div class="flex items-center justify-between">
                                         <div>
                                             <flux:text class="font-bold text-zinc-900 dark:text-white">
-                                                {{ $history->event === 'created' ? __('Receipt Created') : __('Receipt Updated') }}
+                                                {{ $history->event === 'created' ? __('BuyReceipt Created') : __('BuyReceipt Updated') }}
                                             </flux:text>
                                             <flux:text class="text-xs text-zinc-400">
                                                 {{ __('by') }} {{ $history->user?->name ?: __('System') }} • {{ $history->created_at->format('M d, Y h:i A') }}
@@ -277,7 +249,7 @@ new #[Title('Receipt Details')] class extends Component {
                     @empty
                         <div class="p-12 text-center">
                             <flux:icon name="clock" class="size-12 text-zinc-100 mx-auto mb-4" />
-                            <flux:text class="italic text-zinc-400">{{ __('No history available for this receipt.') }}</flux:text>
+                            <flux:text class="italic text-zinc-400">{{ __('No history available for this buy_receipt.') }}</flux:text>
                         </div>
                     @endforelse
                 </div>

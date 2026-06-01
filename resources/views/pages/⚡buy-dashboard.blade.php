@@ -1,19 +1,19 @@
 <?php
 
-use App\Models\Client;
+use App\Models\Supplier;
 use App\Models\MaterialType;
-use App\Models\Receipt;
+use App\Models\BuyReceipt;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 
-new #[Title('Dashboard')] class extends Component {
+new #[Title('Buy Dashboard')] class extends Component {
     #[Computed]
     public function stats()
     {
-        $today = Receipt::whereDate('date', now())->selectRaw('count(*) as count, sum(net_weight) as weight')->first();
-        $thisWeek = Receipt::whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])->selectRaw('count(*) as count, sum(net_weight) as weight')->first();
-        $thisMonth = Receipt::whereMonth('date', now()->month)->whereYear('date', now()->year)->selectRaw('count(*) as count, sum(net_weight) as weight')->first();
+        $today = BuyReceipt::whereDate('date', now())->selectRaw('count(*) as count, sum(net_weight) as weight')->first();
+        $thisWeek = BuyReceipt::whereBetween('date', [now()->startOfWeek(), now()->endOfWeek()])->selectRaw('count(*) as count, sum(net_weight) as weight')->first();
+        $thisMonth = BuyReceipt::whereMonth('date', now()->month)->whereYear('date', now()->year)->selectRaw('count(*) as count, sum(net_weight) as weight')->first();
 
         return [
             'today' => [
@@ -28,7 +28,7 @@ new #[Title('Dashboard')] class extends Component {
                 'count' => $thisMonth->count ?? 0,
                 'weight' => $thisMonth->weight ?? 0,
             ],
-            'total_clients' => Client::count(),
+            'total_suppliers' => Supplier::count(),
             'total_materials' => MaterialType::count(),
         ];
     }
@@ -36,9 +36,9 @@ new #[Title('Dashboard')] class extends Component {
     #[Computed]
     public function materialBreakdown()
     {
-        return Receipt::whereMonth('date', now()->month)
+        return BuyReceipt::whereMonth('date', now()->month)
             ->whereYear('date', now()->year)
-            ->join('material_types', 'receipts.material_type_id', '=', 'material_types.id')
+            ->join('material_types', 'buy_receipts.material_type_id', '=', 'material_types.id')
             ->selectRaw('material_types.name as material, sum(net_weight) as total_weight, count(*) as slip_count')
             ->groupBy('material_types.name')
             ->orderByDesc('total_weight')
@@ -46,9 +46,9 @@ new #[Title('Dashboard')] class extends Component {
     }
 
     #[Computed]
-    public function recentReceipts()
+    public function recentBuyReceipts()
     {
-        return Receipt::with(['client', 'materialType'])
+        return BuyReceipt::with(['supplier', 'materialType'])
             ->latest()
             ->take(6)
             ->get();
@@ -57,7 +57,7 @@ new #[Title('Dashboard')] class extends Component {
     #[Computed]
     public function dailyTotals()
     {
-        return Receipt::selectRaw('date, sum(net_weight) as total_weight, count(*) as slip_count')
+        return BuyReceipt::selectRaw('date, sum(net_weight) as total_weight, count(*) as slip_count')
             ->groupBy('date')
             ->orderByDesc('date')
             ->take(7)
@@ -74,12 +74,12 @@ new #[Title('Dashboard')] class extends Component {
                 <flux:icon name="chart-pie" class="size-7" variant="outline" />
             </div>
             <div>
-                <flux:heading size="xl" class="font-black tracking-tight leading-none">{{ __('Dispatch Analytics') }}</flux:heading>
+                <flux:heading size="xl" class="font-black tracking-tight leading-none">{{ __('Buy Analytics') }}</flux:heading>
                 <flux:subheading class="font-medium mt-1">{{ __('Operational overview for') }} {{ now()->format('F Y') }}</flux:subheading>
             </div>
         </div>
         <div class="flex gap-3">
-            <flux:button icon="plus" variant="primary" :href="route('receipts.create')" wire:navigate class="font-bold shadow-lg shadow-blue-500/20 px-6 py-2.5 rounded-xl">
+            <flux:button icon="plus" variant="primary" :href="route('buy-receipts.create')" wire:navigate class="font-bold shadow-lg shadow-blue-500/20 px-6 py-2.5 rounded-xl">
                 {{ __('New Work Slip') }}
             </flux:button>
         </div>
@@ -131,7 +131,7 @@ new #[Title('Dashboard')] class extends Component {
                 <span class="text-xs font-bold text-zinc-400 uppercase tracking-widest">{{ __('KG') }}</span>
             </div>
             <div class="mt-2 text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
-                {{ $this->stats['month']['count'] }} {{ __('Total dispatches') }}
+                {{ $this->stats['month']['count'] }} {{ __('Total buyes') }}
             </div>
         </flux:card>
 
@@ -142,8 +142,8 @@ new #[Title('Dashboard')] class extends Component {
                     <flux:icon name="users" class="size-5" />
                 </div>
                 <div>
-                    <flux:text class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 leading-none">{{ __('Clients') }}</flux:text>
-                    <div class="text-xl font-black mt-1 leading-none">{{ $this->stats['total_clients'] }}</div>
+                    <flux:text class="text-[9px] font-bold uppercase tracking-[0.15em] text-zinc-400 leading-none">{{ __('Suppliers') }}</flux:text>
+                    <div class="text-xl font-black mt-1 leading-none">{{ $this->stats['total_suppliers'] }}</div>
                 </div>
             </flux:card>
             <flux:card class="flex items-center gap-4 p-4 overflow-hidden border-none shadow-sm bg-zinc-50/50 dark:bg-zinc-900/50 border border-zinc-100 dark:border-zinc-800">
@@ -165,7 +165,7 @@ new #[Title('Dashboard')] class extends Component {
             <div class="flex items-center justify-between px-1">
                 <div class="flex items-center gap-2">
                     <flux:icon name="presentation-chart-line" class="size-4 text-zinc-400" />
-                    <flux:heading class="text-[11px] font-bold uppercase tracking-widest text-zinc-400">{{ __('Dispatch Trends (Last 7 Days)') }}</flux:heading>
+                    <flux:heading class="text-[11px] font-bold uppercase tracking-widest text-zinc-400">{{ __('Buy Trends (Last 7 Days)') }}</flux:heading>
                 </div>
                 <flux:badge size="sm" variant="neutral" class="text-[10px] font-bold uppercase tracking-tighter">{{ __('Metric: KG') }}</flux:badge>
             </div>
@@ -272,36 +272,36 @@ new #[Title('Dashboard')] class extends Component {
                 <flux:table>
                     <flux:table.columns>
                         <flux:table.column class="text-[10px] uppercase tracking-wider font-bold pl-6">{{ __('Pass #') }}</flux:table.column>
-                        <flux:table.column class="text-[10px] uppercase tracking-wider font-bold">{{ __('Client & Destination') }}</flux:table.column>
+                        <flux:table.column class="text-[10px] uppercase tracking-wider font-bold">{{ __('Supplier & Destination') }}</flux:table.column>
                         <flux:table.column class="text-[10px] uppercase tracking-wider font-bold">{{ __('Vehicle') }}</flux:table.column>
                         <flux:table.column class="text-[10px] uppercase tracking-wider font-bold">{{ __('Material') }}</flux:table.column>
                         <flux:table.column align="right" class="text-[10px] uppercase tracking-wider font-bold pr-6">{{ __('Net Payload') }}</flux:table.column>
                     </flux:table.columns>
                     <flux:table.rows>
-                        @forelse ($this->recentReceipts as $receipt)
+                        @forelse ($this->recentBuyReceipts as $buy_receipt)
                             <flux:table.row class="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
                                 <flux:table.cell class="pl-6 font-mono text-[11px] font-bold text-zinc-400 uppercase tracking-tighter">
-                                    #{{ $receipt->pass_number ?: str_pad($receipt->id, 5, '0', STR_PAD_LEFT) }}
+                                    #{{ $buy_receipt->pass_number ?: str_pad($buy_receipt->id, 5, '0', STR_PAD_LEFT) }}
                                 </flux:table.cell>
                                 <flux:table.cell>
                                     <div class="flex flex-col">
-                                        <span class="font-black leading-tight text-zinc-900 dark:text-white uppercase text-xs">{{ $receipt->client->name }}</span>
-                                        <span class="text-[10px] text-zinc-400 font-bold tracking-tight mt-0.5 uppercase">{{ $receipt->time }} • {{ $receipt->date->format('M d') }}</span>
+                                        <span class="font-black leading-tight text-zinc-900 dark:text-white uppercase text-xs">{{ $buy_receipt->supplier->name }}</span>
+                                        <span class="text-[10px] text-zinc-400 font-bold tracking-tight mt-0.5 uppercase">{{ $buy_receipt->time }} • {{ $buy_receipt->date->format('M d') }}</span>
                                     </div>
                                 </flux:table.cell>
                                 <flux:table.cell>
-                                    <flux:badge size="sm" variant="neutral" class="font-mono text-[10px] font-black uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 border-none">{{ $receipt->vehicle_number }}</flux:badge>
+                                    <flux:badge size="sm" variant="neutral" class="font-mono text-[10px] font-black uppercase tracking-widest bg-zinc-100 dark:bg-zinc-800 border-none">{{ $buy_receipt->vehicle_number }}</flux:badge>
                                 </flux:table.cell>
                                 <flux:table.cell>
-                                    <span class="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{{ $receipt->materialType->name }}</span>
+                                    <span class="text-[10px] font-black text-zinc-500 uppercase tracking-widest">{{ $buy_receipt->materialType->name }}</span>
                                 </flux:table.cell>
                                 <flux:table.cell align="right" class="pr-6">
                                     <div class="flex items-center justify-end gap-2">
                                         <span class="font-black text-emerald-600 tabular-nums text-sm">
-                                            {{ number_format($receipt->net_weight, 2) }}
+                                            {{ number_format($buy_receipt->net_weight, 2) }}
                                         </span>
                                         <span class="text-[9px] font-bold text-zinc-400 uppercase tracking-tighter">{{ __('KG') }}</span>
-                                        <flux:button icon="eye" size="sm" variant="ghost" :href="route('receipts.show', $receipt)" wire:navigate class="ml-2" />
+                                        <flux:button icon="eye" size="sm" variant="ghost" :href="route('buy-receipts.show', $buy_receipt)" wire:navigate class="ml-2" />
                                     </div>
                                 </flux:table.cell>
                             </flux:table.row>
@@ -310,7 +310,7 @@ new #[Title('Dashboard')] class extends Component {
                                 <flux:table.cell colspan="5" align="center" class="py-16">
                                     <div class="flex flex-col items-center gap-2">
                                         <flux:icon name="document-magnifying-glass" class="size-8 text-zinc-100" />
-                                        <flux:text class="italic text-zinc-400 font-medium">{{ __('Waiting for today\'s first dispatch...') }}</flux:text>
+                                        <flux:text class="italic text-zinc-400 font-medium">{{ __('Waiting for today\'s first buy...') }}</flux:text>
                                     </div>
                                 </flux:table.cell>
                             </flux:table.row>
