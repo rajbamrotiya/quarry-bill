@@ -124,19 +124,44 @@ new #[Title('Edit Receipt')] class extends Component {
 ?>
 
 <div class="mx-auto max-w-4xl py-6">
-    <div class="mb-8 flex items-center gap-4">
-        <div class="flex size-12 items-center justify-center rounded-xl bg-orange-600 text-white shadow-lg shadow-orange-200">
-            <flux:icon name="pencil-square" class="size-6" variant="outline" />
+    <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="flex size-12 items-center justify-center rounded-xl bg-orange-600 text-white shadow-lg shadow-orange-200">
+                <flux:icon name="pencil-square" class="size-6" variant="outline" />
+            </div>
+            <div>
+                <flux:heading size="xl" class="font-bold">{{ __('Edit Work Receipt') }}</flux:heading>
+                <flux:subheading>{{ __('Modify weighing details') }}</flux:subheading>
+            </div>
         </div>
-        <div>
-            <flux:heading size="xl" class="font-bold">{{ __('Edit Work Receipt') }}</flux:heading>
-            <flux:subheading>{{ __('Modify weighing details for pass #') }}{{ $receipt->id }}</flux:subheading>
+
+        {{-- Highlighted Pass Number --}}
+        <div class="flex flex-col items-end">
+            <span class="uppercase text-[10px] font-bold text-zinc-400 tracking-widest">{{ __('Pass Number') }}</span>
+            <div class="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-500 font-mono text-2xl font-black px-5 py-2 rounded-xl border border-amber-200 dark:border-amber-800 shadow-md mt-1">
+                {{ $receipt->pass_number }}
+            </div>
         </div>
     </div>
 
     <form wire:submit="save" class="space-y-8">
+        {{-- Date and Time Grid --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <flux:field>
+                <flux:label class="uppercase text-sm font-bold text-sky-500 mb-1 tracking-tight">{{ __('Date') }}</flux:label>
+                <flux:input type="date" wire:model="date" icon="calendar" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
+                <flux:error name="date" />
+            </flux:field>
+
+            <flux:field>
+                <flux:label class="uppercase text-sm font-bold text-violet-500 mb-1 tracking-tight">{{ __('Time') }}</flux:label>
+                <flux:input type="time" wire:model="time" icon="clock" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
+                <flux:error name="time" />
+            </flux:field>
+        </div>
+
         {{-- Client Selection Card --}}
-        <flux:card class="bg-zinc-50/50 dark:bg-zinc-900/50 border-dashed border-2">
+        <flux:card class="bg-blue-50/50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 border-2">
             <div class="mb-4">
                 <flux:heading size="sm" class="font-bold text-zinc-400 uppercase tracking-widest">{{ __('Client Selection') }}</flux:heading>
             </div>
@@ -146,6 +171,7 @@ new #[Title('Edit Receipt')] class extends Component {
                 :model="\App\Models\Client::class" 
                 :placeholder="__('-- Choose a client --')" 
                 :label="__('Select Client')" 
+                :labelClass="'text-teal-500'"
             />
 
             <flux:error name="client_id" />
@@ -154,13 +180,8 @@ new #[Title('Edit Receipt')] class extends Component {
         {{-- Main Form Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <flux:field>
-                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Pass Number') }}</flux:label>
-                <flux:input :value="str_pad($receipt->id, 10, '0', STR_PAD_LEFT)" disabled class="bg-zinc-100 font-mono text-zinc-600" />
-            </flux:field>
-
-            <flux:field>
-                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Vehicle Number') }}</flux:label>
-                <flux:input wire:model="vehicle_number" :placeholder="__('e.g. GJ-01-XX-0000')" list="vehicle-numbers-list" />
+                <flux:label class="uppercase text-sm font-bold text-amber-500 mb-1 tracking-tight">{{ __('Vehicle Number') }}</flux:label>
+                <flux:input wire:model="vehicle_number" :placeholder="__('e.g. GJ-01-XX-0000')" list="vehicle-numbers-list" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
                 <datalist id="vehicle-numbers-list">
                     @foreach(\App\Models\Receipt::whereNotNull('vehicle_number')->distinct()->pluck('vehicle_number') as $suggestion)
                         <option value="{{ $suggestion }}">
@@ -174,25 +195,15 @@ new #[Title('Edit Receipt')] class extends Component {
                 :model="\App\Models\MaterialType::class" 
                 :placeholder="__('Select Material')" 
                 :label="__('Material Type')" 
+                :labelClass="'text-rose-500'"
+                class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100"
             />
             <flux:error name="material_type_id" />
 
             <flux:field>
-                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Royalty Number') }}</flux:label>
-                <flux:input wire:model="royalty_number" :placeholder="__('Optional')" />
+                <flux:label class="uppercase text-sm font-bold text-pink-500 mb-1 tracking-tight">{{ __('Royalty Number') }}</flux:label>
+                <flux:input wire:model="royalty_number" :placeholder="__('Optional')" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
                 <flux:error name="royalty_number" />
-            </flux:field>
-
-            <flux:field>
-                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Date') }}</flux:label>
-                <flux:input type="date" wire:model="date" icon="calendar" />
-                <flux:error name="date" />
-            </flux:field>
-
-            <flux:field>
-                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Time') }}</flux:label>
-                <flux:input type="time" wire:model="time" icon="clock" />
-                <flux:error name="time" />
             </flux:field>
         </div>
 
@@ -205,26 +216,26 @@ new #[Title('Edit Receipt')] class extends Component {
                 return val > 0 ? val.toString() : '0';
             }
         }">
-            <flux:card class="flex flex-col items-center justify-center py-8 bg-zinc-50/30">
-                <flux:heading size="sm" class="uppercase text-[10px] font-bold text-zinc-400 mb-4 tracking-tight">{{ __('Gross Weight') }}</flux:heading>
+            <flux:card class="flex flex-col items-center justify-center py-8 bg-indigo-50/50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800">
+                <flux:heading size="sm" class="uppercase text-sm font-bold text-indigo-500 dark:text-indigo-400 mb-4 tracking-tight">{{ __('Gross Weight') }}</flux:heading>
                 <div class="flex flex-col items-center">
-                    <input type="number" step="1" x-model="gross" class="w-full text-center text-3xl font-black bg-transparent border-none focus:ring-0" />
-                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">{{ __('KG') }}</span>
+                    <input type="number" step="1" x-model="gross" class="w-full text-center text-3xl font-black bg-transparent border-none focus:ring-0 text-indigo-900 dark:text-indigo-100" />
+                    <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-1">{{ __('KG') }}</span>
                 </div>
                 <flux:error name="gross_weight" />
             </flux:card>
 
-            <flux:card class="flex flex-col items-center justify-center py-8 bg-zinc-50/30">
-                <flux:heading size="sm" class="uppercase text-[10px] font-bold text-zinc-400 mb-4 tracking-tight">{{ __('Tare Weight') }}</flux:heading>
+            <flux:card class="flex flex-col items-center justify-center py-8 bg-indigo-50/50 dark:bg-indigo-900/30 border-indigo-200 dark:border-indigo-800">
+                <flux:heading size="sm" class="uppercase text-sm font-bold text-indigo-500 dark:text-indigo-400 mb-4 tracking-tight">{{ __('Tare Weight') }}</flux:heading>
                 <div class="flex flex-col items-center">
-                    <input type="number" step="1" x-model="tare" class="w-full text-center text-3xl font-black bg-transparent border-none focus:ring-0" />
-                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">{{ __('KG') }}</span>
+                    <input type="number" step="1" x-model="tare" class="w-full text-center text-3xl font-black bg-transparent border-none focus:ring-0 text-indigo-900 dark:text-indigo-100" />
+                    <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-1">{{ __('KG') }}</span>
                 </div>
                 <flux:error name="tare_weight" />
             </flux:card>
 
             <div class="flex flex-col items-center justify-center py-8 rounded-2xl bg-blue-600 text-white shadow-xl shadow-blue-200">
-                <flux:heading size="sm" class="uppercase text-[10px] font-bold text-blue-100 mb-4 tracking-tight">{{ __('Net Weight') }}</flux:heading>
+                <flux:heading size="sm" class="uppercase text-sm font-bold text-blue-100 mb-4 tracking-tight">{{ __('Net Weight') }}</flux:heading>
                 <div class="flex flex-col items-center">
                     <span class="text-4xl font-black" x-text="net"></span>
                     <span class="text-[10px] font-bold text-blue-100 uppercase tracking-widest mt-1">{{ __('KG') }}</span>
@@ -236,14 +247,14 @@ new #[Title('Edit Receipt')] class extends Component {
         {{-- Payment Section --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <flux:field>
-                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Payment Value') }}</flux:label>
-                <flux:input type="number" step="0.01" wire:model="payment_value" :placeholder="__('0.00')" icon="currency-dollar" />
+                <flux:label class="uppercase text-sm font-bold text-emerald-500 mb-1 tracking-tight">{{ __('Payment Value') }}</flux:label>
+                <flux:input type="number" step="0.01" wire:model="payment_value" :placeholder="__('0.00')" icon="currency-dollar" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
                 <flux:error name="payment_value" />
             </flux:field>
 
             <flux:field>
-                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Payment Type') }}</flux:label>
-                <flux:select wire:model="payment_type" :placeholder="__('Select Payment Type')">
+                <flux:label class="uppercase text-sm font-bold text-fuchsia-500 mb-1 tracking-tight">{{ __('Payment Type') }}</flux:label>
+                <flux:select wire:model="payment_type" :placeholder="__('Select Payment Type')" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100">
                     <flux:select.option value="cash">{{ __('Cash') }}</flux:select.option>
                     <flux:select.option value="online">{{ __('Online') }}</flux:select.option>
                 </flux:select>
@@ -251,8 +262,8 @@ new #[Title('Edit Receipt')] class extends Component {
             </flux:field>
 
             <flux:field>
-                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Payment Remark') }}</flux:label>
-                <flux:input wire:model="payment_remark" :placeholder="__('e.g. Paid by GPay')" list="payment-remarks-list" />
+                <flux:label class="uppercase text-sm font-bold text-cyan-500 mb-1 tracking-tight">{{ __('Payment Remark') }}</flux:label>
+                <flux:input wire:model="payment_remark" :placeholder="__('e.g. Paid by GPay')" list="payment-remarks-list" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
                 <datalist id="payment-remarks-list">
                     @foreach(\App\Models\Receipt::whereNotNull('payment_remark')->distinct()->pluck('payment_remark') as $suggestion)
                         <option value="{{ $suggestion }}">
@@ -263,8 +274,8 @@ new #[Title('Edit Receipt')] class extends Component {
         </div>
 
         <flux:field>
-            <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Remarks (Optional)') }}</flux:label>
-            <flux:textarea wire:model="remarks" :placeholder="__('Any additional notes...')" />
+            <flux:label class="uppercase text-sm font-bold text-gray-500 mb-1 tracking-tight">{{ __('Remarks (Optional)') }}</flux:label>
+            <flux:textarea wire:model="remarks" :placeholder="__('Any additional notes...')" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
             <flux:error name="remarks" />
         </flux:field>
 

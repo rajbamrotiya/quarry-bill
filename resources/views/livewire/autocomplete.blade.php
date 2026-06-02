@@ -31,7 +31,7 @@
     >
         <flux:field>
             @if($label)
-                <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-2 tracking-tight">{{ $label }}</flux:label>
+                <flux:label class="uppercase text-sm font-bold {{ $labelClass }} mb-2 tracking-tight">{{ $label }}</flux:label>
             @endif
             
             <div class="relative">

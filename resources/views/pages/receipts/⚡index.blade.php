@@ -53,7 +53,8 @@ new #[Title('Receipts')] class extends Component {
     <flux:card class="overflow-hidden p-0">
         <flux:table :paginate="$this->receipts">
             <flux:table.columns>
-                <flux:table.column class="px-6">{{ __('Pass #') }}</flux:table.column>
+                <flux:table.column class="px-6">{{ __('ID') }}</flux:table.column>
+                <flux:table.column>{{ __('Pass #') }}</flux:table.column>
                 <flux:table.column>{{ __('Client') }}</flux:table.column>
                 <flux:table.column>{{ __('Vehicle') }}</flux:table.column>
                 <flux:table.column>{{ __('Material') }}</flux:table.column>
@@ -65,7 +66,8 @@ new #[Title('Receipts')] class extends Component {
             <flux:table.rows>
                 @foreach ($this->receipts as $receipt)
                     <flux:table.row :key="$receipt->id">
-                        <flux:table.cell class="px-6 font-medium">
+                        <flux:table.cell class="px-6 text-zinc-500 font-medium">{{ $receipt->id }}</flux:table.cell>
+                        <flux:table.cell class="font-medium">
                             <div class="flex items-center gap-2">
                                 #{{ $receipt->pass_number ?: str_pad($receipt->id, 10, '0', STR_PAD_LEFT) }}
                                 @if($receipt->histories_count > 1)
@@ -87,6 +89,31 @@ new #[Title('Receipts')] class extends Component {
                                 <flux:button icon="arrow-down-tray" variant="ghost" size="sm" :href="route('receipts.pdf', $receipt)" target="_blank" />
                                 <flux:button icon="eye" variant="ghost" size="sm" :href="route('receipts.show', $receipt)" wire:navigate />
                                 <flux:button icon="pencil-square" variant="ghost" size="sm" :href="route('receipts.edit', $receipt)" wire:navigate />
+                            </div>
+                        </flux:table.cell>
+                    </flux:table.row>
+
+                    <flux:table.row :key="'payment-'.$receipt->id" class="bg-zinc-50/50 dark:bg-zinc-900/30">
+                        <flux:table.cell colspan="8" class="px-6 !border-t-0 !pt-2 pb-3">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-4 text-xs">
+                                <div class="font-bold text-zinc-400 uppercase tracking-widest text-[10px]">{{ __('Payment Details') }}:</div>
+                                @if($receipt->payment_value)
+                                    <div class="flex items-center gap-2">
+                                        <flux:badge size="sm" color="green" icon="currency-rupee" class="px-1.5 py-0">{{ $receipt->payment_value }}</flux:badge>
+                                        <flux:badge size="sm" color="zinc" icon="credit-card" class="uppercase px-1.5 py-0">{{ $receipt->payment_type }}</flux:badge>
+                                    </div>
+                                    @if($receipt->payment_remark)
+                                        <div class="text-zinc-500 italic flex items-center gap-1">
+                                            <flux:icon name="chat-bubble-left-ellipsis" class="size-3" />
+                                            {{ $receipt->payment_remark }}
+                                        </div>
+                                    @endif
+                                @else
+                                    <div class="text-zinc-400 italic flex items-center gap-1">
+                                        <flux:icon name="exclamation-circle" class="size-3" />
+                                        {{ __('No payment recorded') }}
+                                    </div>
+                                @endif
                             </div>
                         </flux:table.cell>
                     </flux:table.row>

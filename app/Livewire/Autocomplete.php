@@ -19,15 +19,18 @@ class Autocomplete extends Component
 
     public string $label = '';
 
+    public string $labelClass = 'text-zinc-400';
+
     public bool $showDropdown = false;
 
     public string $selectedName = '';
 
-    public function mount(string $model, string $placeholder = '', string $label = '')
+    public function mount(string $model, string $placeholder = '', string $label = '', string $labelClass = 'text-zinc-400')
     {
         $this->model = $model;
         $this->placeholder = $placeholder;
         $this->label = $label;
+        $this->labelClass = $labelClass;
 
         if ($this->value) {
             $item = $this->model::find($this->value);

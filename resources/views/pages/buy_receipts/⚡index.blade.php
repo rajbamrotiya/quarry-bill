@@ -53,7 +53,8 @@ new #[Title('BuyBuyReceipts')] class extends Component {
     <flux:card class="overflow-hidden p-0">
         <flux:table :paginate="$this->buy_receipts">
             <flux:table.columns>
-                <flux:table.column class="px-6">{{ __('Pass #') }}</flux:table.column>
+                <flux:table.column class="px-6">{{ __('ID') }}</flux:table.column>
+                <flux:table.column>{{ __('Pass #') }}</flux:table.column>
                 <flux:table.column>{{ __('Supplier') }}</flux:table.column>
                 <flux:table.column>{{ __('Vehicle') }}</flux:table.column>
                 <flux:table.column>{{ __('Material') }}</flux:table.column>
@@ -65,7 +66,8 @@ new #[Title('BuyBuyReceipts')] class extends Component {
             <flux:table.rows>
                 @foreach ($this->buy_receipts as $buy_receipt)
                     <flux:table.row :key="$buy_receipt->id">
-                        <flux:table.cell class="px-6 font-medium">
+                        <flux:table.cell class="px-6 text-zinc-500 font-medium">{{ $buy_receipt->id }}</flux:table.cell>
+                        <flux:table.cell class="font-medium">
                             <div class="flex items-center gap-2">
                                 #{{ $buy_receipt->pass_number ?: str_pad($buy_receipt->id, 10, '0', STR_PAD_LEFT) }}
                                 @if($buy_receipt->histories_count > 1)

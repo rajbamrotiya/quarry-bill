@@ -77,7 +77,7 @@ new #[Title('BuyReceipt Details')] class extends Component {
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
                         <flux:field>
-                            <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Consignee / Supplier') }}</flux:label>
+                            <flux:label class="uppercase text-sm tracking-widest text-teal-500 font-bold mb-1">{{ __('Consignee / Supplier') }}</flux:label>
                             <div class="flex flex-col">
                                 <flux:text class="text-lg font-bold text-zinc-900 dark:text-white">{{ $buy_receipt->supplier->name }}</flux:text>
                                 @if($buy_receipt->supplier->gst_number)
@@ -87,7 +87,7 @@ new #[Title('BuyReceipt Details')] class extends Component {
                         </flux:field>
 
                         <flux:field>
-                            <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Material Type') }}</flux:label>
+                            <flux:label class="uppercase text-sm tracking-widest text-rose-500 font-bold mb-1">{{ __('Material Type') }}</flux:label>
                             <div class="flex items-center gap-2">
                                 <div class="size-2 rounded-full bg-indigo-500"></div>
                                 <flux:text class="text-lg font-bold">{{ $buy_receipt->materialType->name }}</flux:text>
@@ -95,7 +95,7 @@ new #[Title('BuyReceipt Details')] class extends Component {
                         </flux:field>
 
                         <flux:field>
-                            <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Vehicle Number') }}</flux:label>
+                            <flux:label class="uppercase text-sm tracking-widest text-amber-500 font-bold mb-1">{{ __('Vehicle Number') }}</flux:label>
                             <div class="flex items-center gap-2">
                                 <flux:icon name="truck" class="size-4 text-zinc-400" />
                                 <flux:text class="text-lg font-black uppercase tracking-tight">{{ $buy_receipt->vehicle_number }}</flux:text>
@@ -103,7 +103,7 @@ new #[Title('BuyReceipt Details')] class extends Component {
                         </flux:field>
 
                         <flux:field>
-                            <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Royalty Number') }}</flux:label>
+                            <flux:label class="uppercase text-sm tracking-widest text-pink-500 font-bold mb-1">{{ __('Royalty Number') }}</flux:label>
                             @if($buy_receipt->royalty_number)
                                 <flux:badge color="amber" class="font-mono text-sm px-3 py-1">{{ $buy_receipt->royalty_number }}</flux:badge>
                             @else
@@ -112,7 +112,7 @@ new #[Title('BuyReceipt Details')] class extends Component {
                         </flux:field>
 
                         <flux:field>
-                            <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Dispatch Date') }}</flux:label>
+                            <flux:label class="uppercase text-sm tracking-widest text-sky-500 font-bold mb-1">{{ __('Dispatch Date') }}</flux:label>
                             <div class="flex items-center gap-2">
                                 <flux:icon name="calendar" class="size-4 text-zinc-400" />
                                 <flux:text class="font-bold">{{ $buy_receipt->date->format('l, M d, Y') }}</flux:text>
@@ -120,7 +120,7 @@ new #[Title('BuyReceipt Details')] class extends Component {
                         </flux:field>
 
                         <flux:field>
-                            <flux:label class="uppercase text-[10px] tracking-widest text-zinc-400 font-bold mb-1">{{ __('Dispatch Time') }}</flux:label>
+                            <flux:label class="uppercase text-sm tracking-widest text-violet-500 font-bold mb-1">{{ __('Dispatch Time') }}</flux:label>
                             <div class="flex items-center gap-2">
                                 <flux:icon name="clock" class="size-4 text-zinc-400" />
                                 <flux:text class="font-bold">{{ \Carbon\Carbon::parse($buy_receipt->time)->format('h:i A') }}</flux:text>
