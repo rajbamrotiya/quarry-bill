@@ -148,7 +148,12 @@ new #[Title('Edit BuyReceipt')] class extends Component {
 
             <flux:field>
                 <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Vehicle Number') }}</flux:label>
-                <flux:input wire:model="vehicle_number" :placeholder="__('e.g. GJ-01-XX-0000')" />
+                <flux:input wire:model="vehicle_number" :placeholder="__('e.g. GJ-01-XX-0000')" list="buy-vehicle-numbers-list" />
+                <datalist id="buy-vehicle-numbers-list">
+                    @foreach(\App\Models\BuyReceipt::whereNotNull('vehicle_number')->distinct()->pluck('vehicle_number') as $suggestion)
+                        <option value="{{ $suggestion }}">
+                    @endforeach
+                </datalist>
                 <flux:error name="vehicle_number" />
             </flux:field>
 
@@ -224,10 +229,9 @@ new #[Title('Edit BuyReceipt')] class extends Component {
             <flux:error name="remarks" />
         </flux:field>
 
-        <div class="flex justify-end pt-4 gap-4">
-            <flux:button :href="route('buy-receipts.index')" variant="ghost" wire:navigate>{{ __('Cancel') }}</flux:button>
-            <flux:button type="submit" variant="primary" class="bg-zinc-900 px-10 py-6 rounded-2xl font-bold gap-2">
-                <flux:icon name="check" class="size-5" />
+        <div class="flex flex-col-reverse sm:flex-row sm:items-center justify-end gap-4 mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+            <flux:button :href="route('buy-receipts.index')" variant="ghost" class="w-full sm:w-auto" wire:navigate>{{ __('Cancel') }}</flux:button>
+            <flux:button type="submit" variant="primary" icon="check" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 shadow-md text-white font-bold py-3 text-base">
                 {{ __('Update Work Slip') }}
             </flux:button>
         </div>

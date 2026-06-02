@@ -151,7 +151,7 @@ new #[Title('New Work Receipt')] class extends Component {
         Flux::modal('print-preview-modal')->show();
     }
 
-    public function save(): void
+    public function save(bool $print = true): void
     {
         $this->validateOnly('client_id');
         $this->validateOnly('vehicle_number');
@@ -182,9 +182,12 @@ new #[Title('New Work Receipt')] class extends Component {
 
         Flux::toast(__('Receipt generated successfully.'));
 
-        $url = route('receipts.pdf', $receipt);
-
-        $this->js("window.open('$url', '_blank'); window.location.href = '" . route('receipts.index') . "';");
+        if ($print) {
+            $url = route('receipts.pdf', $receipt);
+            $this->js("window.open('$url', '_blank'); window.location.href = '" . route('receipts.index') . "';");
+        } else {
+            $this->redirect(route('receipts.index'), navigate: true);
+        }
     }
 };
 ?>
@@ -267,7 +270,12 @@ new #[Title('New Work Receipt')] class extends Component {
 
             <flux:field>
                 <flux:label class="uppercase text-[10px] font-bold text-zinc-400 mb-1 tracking-tight">{{ __('Vehicle Number') }}</flux:label>
-                <flux:input wire:model="vehicle_number" :placeholder="__('e.g. GJ-01-XX-0000')" />
+                <flux:input wire:model="vehicle_number" :placeholder="__('e.g. GJ-01-XX-0000')" list="vehicle-numbers-list" />
+                <datalist id="vehicle-numbers-list">
+                    @foreach(\App\Models\Receipt::whereNotNull('vehicle_number')->distinct()->pluck('vehicle_number') as $suggestion)
+                        <option value="{{ $suggestion }}">
+                    @endforeach
+                </datalist>
                 <flux:error name="vehicle_number" />
             </flux:field>
 
@@ -370,9 +378,8 @@ new #[Title('New Work Receipt')] class extends Component {
             <flux:error name="remarks" />
         </flux:field>
 
-        <div class="flex justify-end pt-4">
-            <flux:button wire:click="preview" variant="primary" class="bg-zinc-900 px-10 py-6 rounded-2xl font-bold gap-2">
-                <flux:icon name="eye" class="size-5" />
+        <div class="flex flex-col sm:flex-row justify-end gap-4 mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
+            <flux:button wire:click="preview" variant="primary" icon="eye" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 shadow-md text-white font-bold py-3 text-base">
                 {{ __('Preview Work Slip') }}
             </flux:button>
         </div>
@@ -446,14 +453,16 @@ new #[Title('New Work Receipt')] class extends Component {
                 </div>
             </div>
 
-            <div class="flex gap-2">
-                <flux:spacer />
+            <div class="flex flex-col-reverse sm:flex-row gap-3 pt-4 mt-4 border-t border-zinc-200 dark:border-zinc-800">
+                <flux:spacer class="hidden sm:block" />
                 <flux:modal.close>
-                    <flux:button variant="ghost">{{ __('Back to Edit') }}</flux:button>
+                    <flux:button variant="ghost" class="w-full sm:w-auto">{{ __('Back to Edit') }}</flux:button>
                 </flux:modal.close>
-                <flux:button wire:click="save" variant="primary" class="bg-zinc-900 font-bold gap-2">
-                    <flux:icon name="check-circle" class="size-5" />
-                    {{ __('Confirm & Save') }}
+                <flux:button wire:click="save(false)" variant="outline" icon="check" class="w-full sm:w-auto">
+                    {{ __('Save Only') }}
+                </flux:button>
+                <flux:button wire:click="save(true)" variant="primary" icon="printer" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 shadow-md text-white font-bold">
+                    {{ __('Save & Print') }}
                 </flux:button>
             </div>
         </div>
