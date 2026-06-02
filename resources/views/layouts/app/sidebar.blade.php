@@ -55,6 +55,9 @@
                     <flux:sidebar.item icon="tag" :href="route('material-types.index')" :current="request()->routeIs('material-types.*')" wire:navigate>
                         {{ __('Material Types') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="users" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>
+                        {{ __('Users') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

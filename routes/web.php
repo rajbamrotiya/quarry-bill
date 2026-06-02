@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\DispatchReportController;
+use App\Http\Controllers\BuyReceiptPdfController;
 use App\Http\Controllers\BuyReportController;
+use App\Http\Controllers\DispatchReportController;
 use App\Http\Controllers\ReceiptPdfController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,6 +11,12 @@ Route::view('/', 'welcome')->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('dashboard', 'pages::dashboard')->name('dashboard');
     Route::livewire('buy-dashboard', 'pages::buy-dashboard')->name('buy-dashboard');
+
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::livewire('/', 'pages::users.index')->name('index');
+        Route::livewire('/create', 'pages::users.create')->name('create');
+        Route::livewire('/{user}/edit', 'pages::users.edit')->name('edit');
+    });
 
     Route::prefix('clients')->name('clients.')->group(function () {
         Route::livewire('/', 'pages::clients.index')->name('index');
@@ -38,7 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::livewire('/create', 'pages::buy_receipts.create')->name('create');
         Route::livewire('/{buy_receipt}', 'pages::buy_receipts.show')->name('show');
         Route::livewire('/{buy_receipt}/edit', 'pages::buy_receipts.edit')->name('edit');
-        Route::get('/{buy_receipt}/pdf', [App\Http\Controllers\BuyReceiptPdfController::class, 'download'])->name('pdf');
+        Route::get('/{buy_receipt}/pdf', [BuyReceiptPdfController::class, 'download'])->name('pdf');
     });
 
     Route::prefix('material-types')->name('material-types.')->group(function () {
