@@ -104,7 +104,7 @@ new #[Title('Edit BuyReceipt')] class extends Component {
             'remarks' => $this->remarks,
         ]);
 
-        Flux::toast(__('BuyReceipt updated successfully.'));
+        Flux::toast(__('Buy Receipt updated successfully.'));
 
         $this->redirect(route('buy-receipts.index'), navigate: true);
     }
@@ -118,7 +118,7 @@ new #[Title('Edit BuyReceipt')] class extends Component {
                 <flux:icon name="pencil-square" class="size-6" variant="outline" />
             </div>
             <div>
-                <flux:heading size="xl" class="font-bold">{{ __('Edit Work BuyReceipt') }}</flux:heading>
+                <flux:heading size="xl" class="font-bold">{{ __('Edit Buy Receipt') }}</flux:heading>
                 <flux:subheading>{{ __('Modify weighing details') }}</flux:subheading>
             </div>
         </div>

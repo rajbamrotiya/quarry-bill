@@ -18,7 +18,12 @@
                     <flux:sidebar.item icon="users" :href="route('clients.index')" :current="request()->routeIs('clients.*')" wire:navigate>
                         {{ __('Clients') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="ticket" :href="route('receipts.index')" :current="request()->routeIs('receipts.*')" wire:navigate>
+                    <div class="my-1">
+                        <flux:button variant="primary" icon="plus-circle" :href="route('receipts.create')" wire:navigate class="w-full justify-start font-bold shadow-sm mb-1 bg-blue-600 hover:bg-blue-700 text-white">
+                            {{ __('New Dispatch Receipt') }}
+                        </flux:button>
+                    </div>
+                    <flux:sidebar.item icon="ticket" :href="route('receipts.index')" :current="request()->routeIs('receipts.index', 'receipts.show', 'receipts.edit')" wire:navigate>
                         {{ __('Dispatch Receipts') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chart-bar" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>
@@ -33,7 +38,12 @@
                     <flux:sidebar.item icon="truck" :href="route('suppliers.index')" :current="request()->routeIs('suppliers.*')" wire:navigate>
                         {{ __('Suppliers') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="shopping-bag" :href="route('buy-receipts.index')" :current="request()->routeIs('buy-receipts.*')" wire:navigate>
+                    <div class="my-1">
+                        <flux:button variant="primary" icon="plus-circle" :href="route('buy-receipts.create')" wire:navigate class="w-full justify-start font-bold shadow-sm mb-1 bg-emerald-600 hover:bg-emerald-700 border-emerald-600 text-white">
+                            {{ __('New Buy Receipt') }}
+                        </flux:button>
+                    </div>
+                    <flux:sidebar.item icon="shopping-bag" :href="route('buy-receipts.index')" :current="request()->routeIs('buy-receipts.index', 'buy-receipts.show', 'buy-receipts.edit')" wire:navigate>
                         {{ __('Buy Receipts') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="chart-pie" :href="route('buy-reports.index')" :current="request()->routeIs('buy-reports.*')" wire:navigate>

@@ -211,7 +211,7 @@ new #[Title('Receipt Details')] class extends Component {
         </div>
     @else
         <div class="animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <flux:card class="p-0 overflow-hidden">
+            <flux:card class="p-0 overflow-hidden border-none shadow-none bg-transparent">
                 <div class="p-6 border-b border-zinc-100 dark:border-zinc-800">
                     <flux:heading size="lg">{{ __('Modification Log') }}</flux:heading>
                     <flux:subheading>{{ __('Timeline of all changes made to this receipt') }}</flux:subheading>

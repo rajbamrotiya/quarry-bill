@@ -52,7 +52,7 @@ new #[Title('Material Types')] class extends Component {
         <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" :placeholder="__('Search materials...')" class="max-w-xs" />
     </div>
 
-    <flux:card class="overflow-hidden p-0">
+    <flux:card class="overflow-hidden p-0 border-none shadow-none bg-transparent">
         <flux:table :paginate="$this->materialTypes">
             <flux:table.columns>
                 <flux:table.column class="px-6">{{ __('Name') }}</flux:table.column>

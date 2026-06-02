@@ -180,7 +180,7 @@ new #[Title('New Work BuyReceipt')] class extends Component {
             'remarks' => $this->remarks,
         ]);
 
-        Flux::toast(__('BuyReceipt generated successfully.'));
+        Flux::toast(__('Buy Receipt generated successfully.'));
 
         if ($print) {
             $url = route('buy-receipts.pdf', $buy_receipt);
@@ -235,7 +235,7 @@ new #[Title('New Work BuyReceipt')] class extends Component {
                 <flux:icon name="document-text" class="size-6" variant="outline" />
             </div>
             <div>
-                <flux:heading size="xl" class="font-bold">{{ __('New Work BuyReceipt') }}</flux:heading>
+                <flux:heading size="xl" class="font-bold">{{ __('New Buy Receipt') }}</flux:heading>
                 <flux:subheading>{{ __('Enter weighing details and link to a supplier') }}</flux:subheading>
             </div>
         </div>
@@ -458,7 +458,7 @@ new #[Title('New Work BuyReceipt')] class extends Component {
         <form wire:submit="createSupplier" class="space-y-6">
             <div>
                 <flux:heading size="lg">{{ __('Add New Supplier') }}</flux:heading>
-                <flux:subheading>{{ __('Create a new supplier to link with this buy_receipt.') }}</flux:subheading>
+                <flux:subheading>{{ __('Create a new supplier to link with this buy receipt.') }}</flux:subheading>
             </div>
 
             <div class="space-y-4">

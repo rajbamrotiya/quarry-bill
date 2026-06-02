@@ -18,15 +18,15 @@ new #[Title('Dashboard')] class extends Component {
         return [
             'today' => [
                 'count' => $today->count ?? 0,
-                'weight' => $today->weight ?? 0,
+                'weight' => ($today->weight ?? 0) / 1000,
             ],
             'week' => [
                 'count' => $thisWeek->count ?? 0,
-                'weight' => $thisWeek->weight ?? 0,
+                'weight' => ($thisWeek->weight ?? 0) / 1000,
             ],
             'month' => [
                 'count' => $thisMonth->count ?? 0,
-                'weight' => $thisMonth->weight ?? 0,
+                'weight' => ($thisMonth->weight ?? 0) / 1000,
             ],
             'total_clients' => Client::count(),
             'total_materials' => MaterialType::count(),
@@ -42,7 +42,10 @@ new #[Title('Dashboard')] class extends Component {
             ->selectRaw('material_types.name as material, sum(net_weight) as total_weight, count(*) as slip_count')
             ->groupBy('material_types.name')
             ->orderByDesc('total_weight')
-            ->get();
+            ->get()->map(function($item) {
+                $item->total_weight = $item->total_weight / 1000;
+                return $item;
+            });
     }
 
     #[Computed]
@@ -61,7 +64,10 @@ new #[Title('Dashboard')] class extends Component {
             ->groupBy('date')
             ->orderByDesc('date')
             ->take(7)
-            ->get();
+            ->get()->reverse()->values()->map(function($item) {
+                $item->total_weight = $item->total_weight / 1000;
+                return $item;
+            });
     }
 };
 ?>
@@ -96,7 +102,7 @@ new #[Title('Dashboard')] class extends Component {
             </div>
             <div class="mt-4 flex items-baseline gap-2">
                 <span class="text-4xl font-black tracking-tighter leading-none">{{ number_format($this->stats['today']['weight'], 2) }}</span>
-                <span class="text-xs font-bold text-blue-100 uppercase tracking-widest">{{ __('KG') }}</span>
+                <span class="text-xs font-bold text-blue-100 uppercase tracking-widest">{{ __('MT') }}</span>
             </div>
             <div class="mt-2 text-[10px] font-semibold text-blue-100/70 uppercase tracking-wider">
                 {{ $this->stats['today']['count'] }} {{ __('Total Slips Today') }}
@@ -112,7 +118,7 @@ new #[Title('Dashboard')] class extends Component {
             </div>
             <div class="mt-4 flex items-baseline gap-2">
                 <span class="text-4xl font-black tracking-tighter leading-none">{{ number_format($this->stats['week']['weight'], 2) }}</span>
-                <span class="text-xs font-bold text-indigo-100 uppercase tracking-widest">{{ __('KG') }}</span>
+                <span class="text-xs font-bold text-indigo-100 uppercase tracking-widest">{{ __('MT') }}</span>
             </div>
             <div class="mt-2 text-[10px] font-semibold text-indigo-100/70 uppercase tracking-wider">
                 {{ $this->stats['week']['count'] }} {{ __('Slips this week') }}
@@ -128,7 +134,7 @@ new #[Title('Dashboard')] class extends Component {
             </div>
             <div class="mt-4 flex items-baseline gap-2">
                 <span class="text-4xl font-black tracking-tighter leading-none">{{ number_format($this->stats['month']['weight'], 2) }}</span>
-                <span class="text-xs font-bold text-zinc-400 uppercase tracking-widest">{{ __('KG') }}</span>
+                <span class="text-xs font-bold text-zinc-400 uppercase tracking-widest">{{ __('MT') }}</span>
             </div>
             <div class="mt-2 text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
                 {{ $this->stats['month']['count'] }} {{ __('Total dispatches') }}
@@ -167,22 +173,22 @@ new #[Title('Dashboard')] class extends Component {
                     <flux:icon name="presentation-chart-line" class="size-4 text-zinc-400" />
                     <flux:heading class="text-[11px] font-bold uppercase tracking-widest text-zinc-400">{{ __('Dispatch Trends (Last 7 Days)') }}</flux:heading>
                 </div>
-                <flux:badge size="sm" variant="neutral" class="text-[10px] font-bold uppercase tracking-tighter">{{ __('Metric: KG') }}</flux:badge>
+                <flux:badge size="sm" variant="neutral" class="text-[10px] font-bold uppercase tracking-tighter">{{ __('Metric: MT') }}</flux:badge>
             </div>
             
             <flux:card class="p-4 border-none shadow-sm bg-white dark:bg-zinc-900">
                 <div class="h-64 w-full relative" x-data="{
                     init() {
                         const labels = @js($this->dailyTotals->pluck('date')->map(fn($d) => \Carbon\Carbon::parse($d)->format('M d'))->toArray());
-                        const data = @js($this->dailyTotals->pluck('weight')->toArray());
+                        const data = @js($this->dailyTotals->pluck('total_weight')->toArray());
                         
                         new window.Chart(this.$refs.canvas, {
                             type: 'line',
                             data: {
                                 labels: labels.reverse(),
                                 datasets: [{
-                                    label: 'Weight (KG)',
-                                    data: data.reverse(),
+                                    label: 'Weight (MT)',
+                                    data: data,
                                     borderColor: '#4f46e5',
                                     backgroundColor: 'rgba(79, 70, 229, 0.1)',
                                     borderWidth: 3,
@@ -268,7 +274,7 @@ new #[Title('Dashboard')] class extends Component {
                 </flux:button>
             </div>
 
-            <flux:card class="p-0 overflow-hidden border-none shadow-sm bg-white dark:bg-zinc-900">
+            <flux:card class="p-0 overflow-hidden border-none shadow-none bg-transparent">
                 <flux:table>
                     <flux:table.columns>
                         <flux:table.column class="text-[10px] uppercase tracking-wider font-bold pl-6">{{ __('Pass #') }}</flux:table.column>
@@ -298,9 +304,9 @@ new #[Title('Dashboard')] class extends Component {
                                 <flux:table.cell align="right" class="pr-6">
                                     <div class="flex items-center justify-end gap-2">
                                         <span class="font-black text-emerald-600 tabular-nums text-sm">
-                                            {{ number_format($receipt->net_weight, 2) }}
+                                            {{ number_format($receipt->net_weight / 1000, 2) }}
                                         </span>
-                                        <span class="text-[9px] font-bold text-zinc-400 uppercase tracking-tighter">{{ __('KG') }}</span>
+                                        <span class="text-[9px] font-bold text-zinc-400 uppercase tracking-tighter">{{ __('MT') }}</span>
                                         <flux:button icon="eye" size="sm" variant="ghost" :href="route('receipts.show', $receipt)" wire:navigate class="ml-2" />
                                     </div>
                                 </flux:table.cell>

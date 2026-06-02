@@ -13,3 +13,12 @@
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @fluxAppearance
+<script>
+    function applyThemeColor() {
+        if (localStorage.getItem('themeColor')) {
+            document.documentElement.classList.add('theme-' + localStorage.getItem('themeColor'));
+        }
+    }
+    applyThemeColor();
+    document.addEventListener('livewire:navigated', applyThemeColor);
+</script>

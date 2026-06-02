@@ -40,17 +40,17 @@ new #[Title('BuyBuyReceipts')] class extends Component {
 
 <div class="flex h-full w-full flex-1 flex-col gap-4">
     <div class="flex items-center justify-between">
-        <flux:heading size="xl">{{ __('BuyBuyReceipts') }}</flux:heading>
+        <flux:heading size="xl">{{ __('Buy Receipts') }}</flux:heading>
         <flux:button icon="plus" variant="primary" :href="route('buy-receipts.create')" wire:navigate>
-            {{ __('Create BuyReceipt') }}
+            {{ __('Create Buy Receipt') }}
         </flux:button>
     </div>
 
     <div class="flex items-center gap-4">
-        <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" :placeholder="__('Search buy_receipts (Pass #, Supplier, Vehicle)...')" class="max-w-xs" />
+        <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" :placeholder="__('Search buy receipts (Pass #, Supplier, Vehicle)...')" class="max-w-xs" />
     </div>
 
-    <flux:card class="overflow-hidden p-0">
+    <flux:card class="overflow-hidden p-0 border-none shadow-none bg-transparent">
         <flux:table :paginate="$this->buy_receipts">
             <flux:table.columns>
                 <flux:table.column class="px-6">{{ __('ID') }}</flux:table.column>
@@ -71,7 +71,7 @@ new #[Title('BuyBuyReceipts')] class extends Component {
                             <div class="flex items-center gap-2">
                                 #{{ $buy_receipt->pass_number ?: str_pad($buy_receipt->id, 10, '0', STR_PAD_LEFT) }}
                                 @if($buy_receipt->histories_count > 1)
-                                    <flux:tooltip content="{{ __('This buy_receipt has been updated :count times', ['count' => $buy_receipt->histories_count - 1]) }}" position="top">
+                                    <flux:tooltip content="{{ __('This buy receipt has been updated :count times', ['count' => $buy_receipt->histories_count - 1]) }}" position="top">
                                         <flux:badge size="sm" color="amber" icon="pencil-square" class="px-1.5 py-0">
                                             {{ $buy_receipt->histories_count - 1 }}
                                         </flux:badge>

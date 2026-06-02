@@ -50,7 +50,7 @@ new #[Title('Clients')] class extends Component {
         <flux:input wire:model.live.debounce.300ms="search" icon="magnifying-glass" :placeholder="__('Search by name, email, mobile, GST or district...')" class="max-w-md" />
     </div>
 
-    <flux:card class="overflow-hidden p-0">
+    <flux:card class="overflow-hidden p-0 border-none shadow-none bg-transparent">
         <flux:table :paginate="$this->clients">
             <flux:table.columns>
                 <flux:table.column class="px-6">{{ __('Name') }}</flux:table.column>

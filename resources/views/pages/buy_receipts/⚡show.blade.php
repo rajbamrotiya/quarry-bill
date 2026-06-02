@@ -28,7 +28,7 @@ new #[Title('BuyReceipt Details')] class extends Component {
             <flux:button icon="arrow-left" variant="ghost" :href="route('buy-receipts.index')" wire:navigate />
             <div>
                 <div class="flex items-center gap-2">
-                    <flux:heading size="xl" class="font-black">{{ __('BuyReceipt Details') }}</flux:heading>
+                    <flux:heading size="xl" class="font-black">{{ __('Buy Receipt Details') }}</flux:heading>
                     <flux:badge color="indigo" size="sm" inset="top" class="font-mono">#{{ $buy_receipt->pass_number ?: str_pad($buy_receipt->id, 10, '0', STR_PAD_LEFT) }}</flux:badge>
                 </div>
                 <flux:subheading>{{ __('Detailed information and modification logs') }}</flux:subheading>
@@ -39,7 +39,7 @@ new #[Title('BuyReceipt Details')] class extends Component {
                 {{ __('Download PDF') }}
             </flux:button>
             <flux:button icon="pencil-square" variant="primary" :href="route('buy-receipts.edit', $buy_receipt)" wire:navigate class="bg-indigo-600 border-indigo-600">
-                {{ __('Edit BuyReceipt') }}
+                {{ __('Edit Buy Receipt') }}
             </flux:button>
         </div>
     </div>
@@ -183,10 +183,10 @@ new #[Title('BuyReceipt Details')] class extends Component {
         </div>
     @else
         <div class="animate-in fade-in slide-in-from-bottom-4 duration-300">
-            <flux:card class="p-0 overflow-hidden">
+            <flux:card class="p-0 overflow-hidden border-none shadow-none bg-transparent">
                 <div class="p-6 border-b border-zinc-100 dark:border-zinc-800">
                     <flux:heading size="lg">{{ __('Modification Log') }}</flux:heading>
-                    <flux:subheading>{{ __('Timeline of all changes made to this buy_receipt') }}</flux:subheading>
+                    <flux:subheading>{{ __('Timeline of all changes made to this buy receipt') }}</flux:subheading>
                 </div>
 
                 <div class="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -209,7 +209,7 @@ new #[Title('BuyReceipt Details')] class extends Component {
                                     <div class="flex items-center justify-between">
                                         <div>
                                             <flux:text class="font-bold text-zinc-900 dark:text-white">
-                                                {{ $history->event === 'created' ? __('BuyReceipt Created') : __('BuyReceipt Updated') }}
+                                                {{ $history->event === 'created' ? __('Buy Receipt Created') : __('Buy Receipt Updated') }}
                                             </flux:text>
                                             <flux:text class="text-xs text-zinc-400">
                                                 {{ __('by') }} {{ $history->user?->name ?: __('System') }} • {{ $history->created_at->format('M d, Y h:i A') }}
@@ -249,7 +249,7 @@ new #[Title('BuyReceipt Details')] class extends Component {
                     @empty
                         <div class="p-12 text-center">
                             <flux:icon name="clock" class="size-12 text-zinc-100 mx-auto mb-4" />
-                            <flux:text class="italic text-zinc-400">{{ __('No history available for this buy_receipt.') }}</flux:text>
+                            <flux:text class="italic text-zinc-400">{{ __('No history available for this buy receipt.') }}</flux:text>
                         </div>
                     @endforelse
                 </div>

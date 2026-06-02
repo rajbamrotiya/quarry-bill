@@ -64,3 +64,49 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+@layer theme {
+    .theme-blue {
+        --color-accent: var(--color-blue-600);
+        --color-accent-content: var(--color-blue-600);
+        --color-accent-foreground: var(--color-white);
+    }
+    .dark.theme-blue, .dark .theme-blue {
+        --color-accent: var(--color-blue-500);
+        --color-accent-content: var(--color-blue-500);
+        --color-accent-foreground: var(--color-white);
+    }
+
+    .theme-red {
+        --color-accent: var(--color-red-600);
+        --color-accent-content: var(--color-red-600);
+        --color-accent-foreground: var(--color-white);
+    }
+    .dark.theme-red, .dark .theme-red {
+        --color-accent: var(--color-red-500);
+        --color-accent-content: var(--color-red-500);
+        --color-accent-foreground: var(--color-white);
+    }
+
+    .theme-emerald {
+        --color-accent: var(--color-emerald-600);
+        --color-accent-content: var(--color-emerald-600);
+        --color-accent-foreground: var(--color-white);
+    }
+    .dark.theme-emerald, .dark .theme-emerald {
+        --color-accent: var(--color-emerald-500);
+        --color-accent-content: var(--color-emerald-500);
+        --color-accent-foreground: var(--color-white);
+    }
+    
+    .theme-amber {
+        --color-accent: var(--color-amber-600);
+        --color-accent-content: var(--color-amber-600);
+        --color-accent-foreground: var(--color-white);
+    }
+    .dark.theme-amber, .dark .theme-amber {
+        --color-accent: var(--color-amber-500);
+        --color-accent-content: var(--color-amber-500);
+        --color-accent-foreground: var(--color-white);
+    }
+}
