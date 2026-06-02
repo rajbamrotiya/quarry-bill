@@ -288,7 +288,7 @@ new #[Title('New Work BuyReceipt')] class extends Component {
         </flux:card>
 
         {{-- Main Form Grid --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <flux:field>
                 <flux:label class="uppercase text-sm font-bold text-amber-500 mb-1 tracking-tight">{{ __('Vehicle Number') }}</flux:label>
                 <flux:input wire:model="vehicle_number" :placeholder="__('e.g. GJ-01-XX-0000')" list="buy-vehicle-numbers-list" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
@@ -310,11 +310,6 @@ new #[Title('New Work BuyReceipt')] class extends Component {
             />
             <flux:error name="material_type_id" />
 
-            <flux:field>
-                <flux:label class="uppercase text-sm font-bold text-pink-500 mb-1 tracking-tight">{{ __('Royalty Number') }}</flux:label>
-                <flux:input wire:model="royalty_number" :placeholder="__('Optional')" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
-                <flux:error name="royalty_number" />
-            </flux:field>
         </div>
 
         {{-- Weight Section --}}
@@ -355,6 +350,12 @@ new #[Title('New Work BuyReceipt')] class extends Component {
         </div>
 
 
+
+        <flux:field>
+            <flux:label class="uppercase text-sm font-bold text-pink-500 mb-1 tracking-tight">{{ __('Royalty Number') }}</flux:label>
+            <flux:input wire:model="royalty_number" :placeholder="__('Optional')" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
+            <flux:error name="royalty_number" />
+        </flux:field>
 
         <flux:field>
             <flux:label class="uppercase text-sm font-bold text-gray-500 mb-1 tracking-tight">{{ __('Remarks (Optional)') }}</flux:label>
