@@ -34,17 +34,24 @@ class DispatchReportController extends Controller
     public function monthly(Request $request)
     {
         $request->validate([
-            'client_id' => 'required|exists:clients,id',
+            'client_id' => 'nullable|exists:clients,id',
             'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
         ]);
 
-        $client = Client::findOrFail($request->client_id);
         [$year, $monthNum] = explode('-', $request->month);
         $monthName = Carbon::createFromDate($year, $monthNum)->format('F Y');
 
-        $receipts = Receipt::with(['materialType'])
-            ->where('client_id', $client->id)
-            ->whereYear('date', $year)
+        $query = Receipt::with(['materialType']);
+        $client = null;
+
+        if ($request->filled('client_id')) {
+            $client = Client::findOrFail($request->client_id);
+            $query->where('client_id', $client->id);
+        } else {
+            $query->with('client');
+        }
+
+        $receipts = $query->whereYear('date', $year)
             ->whereMonth('date', $monthNum)
             ->orderBy('date')
             ->orderBy('time')
@@ -56,7 +63,7 @@ class DispatchReportController extends Controller
             'month' => $monthName,
         ]);
 
-        $filename = "monthly-report-{$client->name}-{$request->month}.pdf";
+        $filename = 'monthly-report-'.($client ? $client->name.'-' : 'all-clients-')."{$request->month}.pdf";
 
         return $pdf->stream($filename);
     }
@@ -64,17 +71,22 @@ class DispatchReportController extends Controller
     public function clientMaterialSummary(Request $request)
     {
         $request->validate([
-            'client_id' => 'required|exists:clients,id',
+            'client_id' => 'nullable|exists:clients,id',
             'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
         ]);
 
-        $client = Client::findOrFail($request->client_id);
         [$year, $monthNum] = explode('-', $request->month);
         $monthName = Carbon::createFromDate($year, $monthNum)->format('F Y');
 
-        $receipts = Receipt::with('materialType')
-            ->where('client_id', $client->id)
-            ->whereYear('date', $year)
+        $query = Receipt::with('materialType');
+        $client = null;
+
+        if ($request->filled('client_id')) {
+            $client = Client::findOrFail($request->client_id);
+            $query->where('client_id', $client->id);
+        }
+
+        $receipts = $query->whereYear('date', $year)
             ->whereMonth('date', $monthNum)
             ->get();
 
@@ -93,7 +105,7 @@ class DispatchReportController extends Controller
             'month' => $monthName,
         ]);
 
-        $filename = "material-summary-{$client->name}-{$request->month}.pdf";
+        $filename = 'material-summary-'.($client ? $client->name.'-' : 'all-clients-')."{$request->month}.pdf";
 
         return $pdf->stream($filename);
     }

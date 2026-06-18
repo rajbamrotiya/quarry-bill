@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Material Summary - {{ $client->name }} - {{ $month }}</title>
+    <title>Material Summary{{ $client ? ' - ' . $client->name : '' }} - {{ $month }}</title>
     <style>
         @page {
             margin: 1cm;
@@ -92,7 +92,9 @@
     </div>
 
     <div class="client-info">
-        Client Name: <strong class="font-bold">{{ $client->name }}</strong>
+        @if($client)
+            Client Name: <strong class="font-bold">{{ $client->name }}</strong>
+        @endif
     </div>
 
     <table>
@@ -122,7 +124,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" style="text-align: center; padding: 20px;">No dispatches found for this client and month.</td>
+                    <td colspan="5" style="text-align: center; padding: 20px;">No dispatches found for selected criteria and month.</td>
                 </tr>
             @endforelse
         </tbody>

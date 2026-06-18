@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Monthly Dispatch Report - {{ $client->name }} - {{ $month }}</title>
+    <title>Monthly Dispatch Report{{ $client ? ' - ' . $client->name : '' }} - {{ $month }}</title>
     <style>
         @page {
             margin: 1cm;
@@ -90,7 +90,9 @@
         <div class="company-name">QUARRY BILL</div>
         <div class="report-title">MONTHLY DISPATCH REPORT</div>
         <div class="client-info">
-            Client: <strong>{{ $client->name }}</strong> |
+            @if($client)
+                Client: <strong>{{ $client->name }}</strong> |
+            @endif
             Month: <strong>{{ $month }}</strong>
         </div>
     </div>
@@ -102,6 +104,9 @@
                 <th width="12%">Pass No</th>
                 <th width="10%">Date</th>
                 <th width="8%">Time</th>
+                @if(!$client)
+                    <th width="15%">Client</th>
+                @endif
                 <th>Material</th>
                 <th width="15%">Vehicle Number</th>
                 <th width="15%">Royalty No</th>
@@ -117,6 +122,9 @@
                     <td class="font-bold">{{ $receipt->pass_number }}</td>
                     <td>{{ \Carbon\Carbon::parse($receipt->date)->format('d-m-Y') }}</td>
                     <td>{{ \Carbon\Carbon::parse($receipt->time)->format('h:i A') }}</td>
+                    @if(!$client)
+                        <td class="font-bold">{{ $receipt->client->name }}</td>
+                    @endif
                     <td>{{ $receipt->materialType->name }}</td>
                     <td class="font-bold">{{ $receipt->vehicle_number }}</td>
                     <td>{{ $receipt->royalty_number ?: '-' }}</td>
@@ -124,7 +132,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 20px;">No dispatches found for this client in selected month.</td>
+                    <td colspan="{{ $client ? 8 : 9 }}" style="text-align: center; padding: 20px;">No dispatches found for selected criteria in selected month.</td>
                 </tr>
             @endforelse
         </tbody>

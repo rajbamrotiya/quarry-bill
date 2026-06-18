@@ -31,7 +31,7 @@ new #[Title('Dispatch Reports')] class extends Component {
     public function generateMonthly(): void
     {
         $this->validate([
-            'client_id' => 'required|exists:clients,id',
+            'client_id' => 'nullable|exists:clients,id',
             'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
         ]);
 
@@ -46,7 +46,7 @@ new #[Title('Dispatch Reports')] class extends Component {
     public function generateClientMaterialSummary(): void
     {
         $this->validate([
-            'client_id' => 'required|exists:clients,id',
+            'client_id' => 'nullable|exists:clients,id',
             'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
         ]);
 
