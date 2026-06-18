@@ -185,7 +185,7 @@ new #[Title('Dashboard')] class extends Component {
                         new window.Chart(this.$refs.canvas, {
                             type: 'line',
                             data: {
-                                labels: labels.reverse(),
+                                labels: labels,
                                 datasets: [{
                                     label: 'Weight (MT)',
                                     data: data,
