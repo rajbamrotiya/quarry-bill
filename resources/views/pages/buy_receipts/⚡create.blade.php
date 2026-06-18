@@ -74,6 +74,22 @@ new #[Title('New Work BuyReceipt')] class extends Component {
         $this->net_weight = max(0, (int)$this->gross_weight - (int)$this->tare_weight);
     }
 
+    public function fetchTareWeight(): void
+    {
+        if (blank($this->vehicle_number)) {
+            return;
+        }
+
+        $lastReceipt = BuyReceipt::where('vehicle_number', $this->vehicle_number)
+            ->latest('id')
+            ->first();
+
+        if ($lastReceipt && $lastReceipt->tare_weight > 0) {
+            $this->tare_weight = $lastReceipt->tare_weight;
+            $this->calculateNetWeight();
+        }
+    }
+
     #[Computed]
     public function suppliers()
     {
@@ -291,7 +307,7 @@ new #[Title('New Work BuyReceipt')] class extends Component {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <flux:field>
                 <flux:label class="uppercase text-sm font-bold text-amber-500 mb-1 tracking-tight">{{ __('Vehicle Number') }}</flux:label>
-                <flux:input wire:model="vehicle_number" :placeholder="__('e.g. GJ-01-XX-0000')" list="buy-vehicle-numbers-list" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
+                <flux:input wire:model="vehicle_number" wire:change="fetchTareWeight" :placeholder="__('e.g. GJ-01-XX-0000')" list="buy-vehicle-numbers-list" class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100" />
                 <datalist id="buy-vehicle-numbers-list">
                     @foreach(\App\Models\BuyReceipt::whereNotNull('vehicle_number')->distinct()->pluck('vehicle_number') as $suggestion)
                         <option value="{{ $suggestion }}">
@@ -490,4 +506,15 @@ new #[Title('New Work BuyReceipt')] class extends Component {
             </div>
         </form>
     </flux:modal>
+
+    {{-- Full Page Loader for Fetching Tare Weight --}}
+    <div wire:loading wire:target="fetchTareWeight" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div class="bg-white dark:bg-zinc-800 p-5 rounded-2xl shadow-2xl flex flex-col items-center gap-3">
+            <svg class="animate-spin h-8 w-8 text-indigo-600 dark:text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-sm font-bold text-zinc-700 dark:text-zinc-200">{{ __('Fetching vehicle details...') }}</span>
+        </div>
+    </div>
 </div>
