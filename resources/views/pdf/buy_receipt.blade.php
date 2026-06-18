@@ -17,7 +17,7 @@
         }
         .buy_receipt-container {
             width: 100%;
-            height: 265px;
+            height: 310px;
             margin-bottom: 2px;
             position: relative;
             margin-top: 10px;
@@ -81,8 +81,8 @@
             padding: 6px 0;
             width: 50%;
         }
-        .field-label { font-size: 7px; color: #9ca3af; text-transform: uppercase; margin-bottom: 1px; font-weight: 600; }
-        .field-value { font-size: 10px; font-weight: 800; text-transform: uppercase; margin: 0; color: #111827; }
+        .field-label { font-size: 14px; color: #9ca3af; text-transform: uppercase; margin-bottom: 1px; font-weight: 600; }
+        .field-value { font-size: 14px; font-weight: 800; text-transform: uppercase; margin: 0; color: #111827; }
 
         .weight-table {
             margin-top: 8px;
@@ -94,7 +94,7 @@
             padding: 10px 5px;
             text-align: center;
         }
-        .weight-label { font-size: 7px; color: #4b5563; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
+        .weight-label { font-size: 10px; color: #4b5563; text-transform: uppercase; font-weight: bold; margin-bottom: 4px; }
         .weight-value { font-size: 15px; font-weight: 900; margin: 0; }
         .weight-value span { font-size: 9px; font-weight: normal; margin-left: 2px; }
 
