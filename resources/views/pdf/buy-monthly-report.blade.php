@@ -99,15 +99,12 @@
         <thead>
             <tr>
                 <th width="4%">NO</th>
-                <th>Date</th>
                 <th>Pass No.</th>
+                <th>Date</th>
                 <th>Time</th>
-                <th width="12%">Pass No</th>
-                <th width="10%">Date</th>
-                <th width="8%">Time</th>
                 <th>Material</th>
-                <th width="15%">Vehicle Number</th>
-                <th width="15%">Royalty No</th>
+                <th width="10%">Vehicle No.</th>
+                <th width="8%">Royalty No.</th>
                 <th width="12%" class="text-right">Net Weight (T)</th>
             </tr>
         </thead>
@@ -123,8 +120,6 @@
                     <td>{{ $buy_receipt->materialType->name }}</td>
                     <td class="font-bold">{{ $buy_receipt->vehicle_number }}</td>
                     <td>{{ $buy_receipt->royalty_number ?: '-' }}</td>
-                    <td class="text-right">{{ number_format($buy_receipt->gross_weight) }}</td>
-                    <td class="text-right">{{ number_format($buy_receipt->tare_weight) }}</td>
                     <td class="text-right font-bold">{{ number_format($buy_receipt->net_weight) }}</td>
                 </tr>
             @empty

@@ -58,11 +58,6 @@ new #[Title('New Work Receipt')] class extends Component {
         $this->date = now()->format('Y-m-d');
         $this->time = now()->format('H:i');
         $this->calculateNetWeight();
-
-        $lastReceipt = Receipt::latest()->first();
-        if ($lastReceipt) {
-            $this->material_type_id = (string) $lastReceipt->material_type_id;
-        }
     }
 
     public function updatedGrossWeight(): void
@@ -294,11 +289,11 @@ new #[Title('New Work Receipt')] class extends Component {
                 </flux:modal.trigger>
             </div>
 
-            <livewire:autocomplete 
-                wire:model="client_id" 
-                :model="\App\Models\Client::class" 
-                :placeholder="__('-- Choose a client --')" 
-                :label="__('Select Client')" 
+            <livewire:autocomplete
+                wire:model="client_id"
+                :model="\App\Models\Client::class"
+                :placeholder="__('-- Choose a client --')"
+                :label="__('Select Client')"
                 :labelClass="'text-teal-500'"
             />
 
@@ -318,11 +313,11 @@ new #[Title('New Work Receipt')] class extends Component {
                 <flux:error name="vehicle_number" />
             </flux:field>
 
-            <livewire:autocomplete 
-                wire:model="material_type_id" 
-                :model="\App\Models\MaterialType::class" 
-                :placeholder="__('Select Material')" 
-                :label="__('Material Type')" 
+            <livewire:autocomplete
+                wire:model="material_type_id"
+                :model="\App\Models\MaterialType::class"
+                :placeholder="__('Select Material')"
+                :label="__('Material Type')"
                 :labelClass="'text-rose-500'"
                 class="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100"
             />
@@ -331,10 +326,10 @@ new #[Title('New Work Receipt')] class extends Component {
         </div>
 
         {{-- Weight Section --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" x-data="{ 
-            gross: @entangle('gross_weight').live, 
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" x-data="{
+            gross: @entangle('gross_weight').live,
             tare: @entangle('tare_weight').live,
-            get net() { 
+            get net() {
                 let val = (parseInt(this.gross, 10) || 0) - (parseInt(this.tare, 10) || 0);
                 return val > 0 ? val.toString() : '0';
             }
@@ -425,7 +420,7 @@ new #[Title('New Work Receipt')] class extends Component {
 
             <div class="preview-box p-6 bg-zinc-100 dark:bg-zinc-800/50 rounded-2xl max-h-[700px] overflow-y-auto shadow-inner">
                 <div class="space-y-4">
-                    <x-receipt-slip 
+                    <x-receipt-slip
                         :preview="true"
                         :clientName="$this->selectedClientName"
                         :vehicleNumber="$vehicle_number"
@@ -445,7 +440,7 @@ new #[Title('New Work Receipt')] class extends Component {
                         {{ __('Perforation Line') }}
                     </div>
 
-                    <x-receipt-slip 
+                    <x-receipt-slip
                         :preview="true"
                         :clientName="$this->selectedClientName"
                         :vehicleNumber="$vehicle_number"
@@ -465,7 +460,7 @@ new #[Title('New Work Receipt')] class extends Component {
                         {{ __('Perforation Line') }}
                     </div>
 
-                    <x-receipt-slip 
+                    <x-receipt-slip
                         :preview="true"
                         :clientName="$this->selectedClientName"
                         :vehicleNumber="$vehicle_number"
