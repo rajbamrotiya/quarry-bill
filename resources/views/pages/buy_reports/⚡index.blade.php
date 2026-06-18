@@ -58,6 +58,19 @@ new #[Title('Buy Reports')] class extends Component {
         $this->js("window.open('$url', '_blank');");
     }
 
+    public function generateMonthlyVehicleSummary(): void
+    {
+        $this->validate([
+            'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
+        ]);
+
+        $url = route('buy-reports.vehicle-summary-pdf', [
+            'month' => $this->month
+        ]);
+        
+        $this->js("window.open('$url', '_blank');");
+    }
+
     #[Computed]
     public function suppliers()
     {
@@ -164,6 +177,10 @@ new #[Title('Buy Reports')] class extends Component {
 
                 <flux:button wire:click="generateSupplierMaterialSummary" variant="primary" icon="document-chart-bar" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold">
                     {{ __('Generate Material Summary PDF') }}
+                </flux:button>
+
+                <flux:button wire:click="generateMonthlyVehicleSummary" variant="primary" icon="truck" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold">
+                    {{ __('Generate Monthly Vehicle Summary PDF') }}
                 </flux:button>
             </div>
         </flux:card>
