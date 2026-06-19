@@ -128,4 +128,32 @@ class BuyReportController extends Controller
 
         return $pdf->stream($filename);
     }
+
+    public function dailyVehicleSummary(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date',
+        ]);
+
+        $date = $request->date;
+
+        $buy_receipts = BuyReceipt::whereDate('date', $date)->get();
+
+        $vehicles = $buy_receipts->groupBy('vehicle_number')->map(function ($group, $vehicleNumber) {
+            return [
+                'vehicle_number' => $vehicleNumber ?: 'Unknown',
+                'count' => $group->count(),
+                'total_weight' => $group->sum('net_weight'),
+            ];
+        })->values();
+
+        $pdf = Pdf::loadView('pdf.buy-daily-vehicle-summary', [
+            'vehicles' => $vehicles,
+            'date' => $date,
+        ]);
+
+        $filename = "buy-daily-vehicle-summary-{$date}.pdf";
+
+        return $pdf->stream($filename);
+    }
 }

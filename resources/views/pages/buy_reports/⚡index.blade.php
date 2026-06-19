@@ -28,6 +28,17 @@ new #[Title('Buy Reports')] class extends Component {
         $this->js("window.open('$url', '_blank');");
     }
 
+    public function generateDailyVehicleSummary(): void
+    {
+        $this->validate([
+            'date' => 'required|date',
+        ]);
+
+        $url = route('buy-reports.daily-vehicle-summary-pdf', ['date' => $this->date]);
+        
+        $this->js("window.open('$url', '_blank');");
+    }
+
     public function generateMonthly(): void
     {
         $this->validate([
@@ -120,9 +131,15 @@ new #[Title('Buy Reports')] class extends Component {
                 </div>
             </div>
 
-            <flux:button wire:click="generateDaily" variant="primary" icon="arrow-down-tray" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold">
-                {{ __('Generate Daily PDF') }}
-            </flux:button>
+            <div class="space-y-3">
+                <flux:button wire:click="generateDaily" variant="primary" icon="arrow-down-tray" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold">
+                    {{ __('Generate Daily PDF') }}
+                </flux:button>
+
+                <flux:button wire:click="generateDailyVehicleSummary" variant="primary" icon="truck" class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold">
+                    {{ __('Generate Daily Vehicle Summary PDF') }}
+                </flux:button>
+            </div>
         </flux:card>
 
         {{-- Monthly Report Section --}}
