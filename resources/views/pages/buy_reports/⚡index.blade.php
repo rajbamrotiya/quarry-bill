@@ -10,11 +10,14 @@ new #[Title('Buy Reports')] class extends Component {
     public string $date = '';
     public string $supplier_id = '';
     public string $month = '';
+    public string $vehicle_number = '';
+    public string $vehicle_month = '';
 
     public function mount(): void
     {
         $this->date = now()->format('Y-m-d');
         $this->month = now()->format('Y-m');
+        $this->vehicle_month = now()->format('Y-m');
     }
 
     public function generateDaily(): void
@@ -86,6 +89,27 @@ new #[Title('Buy Reports')] class extends Component {
     public function suppliers()
     {
         return Supplier::orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function vehicles()
+    {
+        return BuyReceipt::select('vehicle_number')->distinct()->orderBy('vehicle_number')->pluck('vehicle_number');
+    }
+
+    public function generateMonthlyVehicleReport(): void
+    {
+        $this->validate([
+            'vehicle_number' => 'required|string',
+            'vehicle_month' => 'required|string|regex:/^\d{4}-\d{2}$/',
+        ]);
+
+        $url = route('buy-reports.monthly-vehicle-report-pdf', [
+            'vehicle_number' => $this->vehicle_number,
+            'month' => $this->vehicle_month
+        ]);
+        
+        $this->js("window.open('$url', '_blank');");
     }
 };
 ?>
@@ -200,6 +224,59 @@ new #[Title('Buy Reports')] class extends Component {
                     {{ __('Generate Monthly Vehicle Summary PDF') }}
                 </flux:button>
             </div>
+        </flux:card>
+
+        {{-- Monthly Vehicle Report Section --}}
+        <flux:card class="space-y-6">
+            <div class="flex items-center gap-2 mb-2">
+                <flux:icon name="truck" class="size-5 text-zinc-400" />
+                <flux:heading size="lg">{{ __('Vehicle Report') }}</flux:heading>
+            </div>
+
+            <flux:field>
+                <flux:label>{{ __('Vehicle Number') }}</flux:label>
+                <flux:input wire:model.live="vehicle_number" list="vehicles" placeholder="Enter or select vehicle" />
+                <datalist id="vehicles">
+                    @foreach($this->vehicles as $vehicle)
+                        <option value="{{ $vehicle }}"></option>
+                    @endforeach
+                </datalist>
+                <flux:error name="vehicle_number" />
+            </flux:field>
+
+            <flux:field>
+                <flux:label>{{ __('Select Month') }}</flux:label>
+                <flux:input type="month" wire:model.live="vehicle_month" icon="calendar" />
+                <flux:error name="vehicle_month" />
+            </flux:field>
+
+            {{-- Vehicle Stats --}}
+            @php
+                $vehicleStats = null;
+                if ($vehicle_number && $vehicle_month) {
+                    [$vYear, $vMonthNum] = explode('-', $vehicle_month);
+                    $vehicleStats = \App\Models\BuyReceipt::where('vehicle_number', $vehicle_number)
+                        ->whereYear('date', $vYear)
+                        ->whereMonth('date', $vMonthNum)
+                        ->selectRaw('count(*) as count, sum(net_weight) as weight')
+                        ->first();
+                }
+            @endphp
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-100 dark:border-zinc-800 text-center">
+                    <flux:text class="uppercase text-[9px] font-bold text-zinc-400 tracking-widest mb-1">{{ __('Month Slips') }}</flux:text>
+                    <div class="text-xl font-black">{{ $vehicleStats ? $vehicleStats->count : 0 }}</div>
+                </div>
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-900/50 rounded-xl border border-zinc-100 dark:border-zinc-800 text-center">
+                    <flux:text class="uppercase text-[9px] font-bold text-zinc-400 tracking-widest mb-1">{{ __('Month Weight') }}</flux:text>
+                    <div class="text-xl font-black text-amber-600">{{ $vehicleStats ? number_format($vehicleStats->weight) : '0' }}<span class="text-[10px] ml-0.5">KG</span></div>
+                </div>
+            </div>
+
+            <flux:button wire:click="generateMonthlyVehicleReport" variant="primary" icon="document-text" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold">
+                {{ __('Generate Vehicle Report PDF') }}
+            </flux:button>
         </flux:card>
     </div>
 </div>

@@ -156,4 +156,34 @@ class BuyReportController extends Controller
 
         return $pdf->stream($filename);
     }
+
+    public function monthlyVehicleReport(Request $request)
+    {
+        $request->validate([
+            'vehicle_number' => 'required|string',
+            'month' => 'required|string|regex:/^\d{4}-\d{2}$/',
+        ]);
+
+        [$year, $monthNum] = explode('-', $request->month);
+        $monthName = Carbon::createFromDate($year, $monthNum)->format('F Y');
+        $vehicleNumber = $request->vehicle_number;
+
+        $buy_receipts = BuyReceipt::with(['supplier', 'materialType'])
+            ->where('vehicle_number', $vehicleNumber)
+            ->whereYear('date', $year)
+            ->whereMonth('date', $monthNum)
+            ->orderBy('date')
+            ->orderBy('time')
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.buy-monthly-vehicle-report', [
+            'buy_receipts' => $buy_receipts,
+            'vehicle_number' => $vehicleNumber,
+            'month' => $monthName,
+        ]);
+
+        $filename = "buy-monthly-vehicle-report-{$vehicleNumber}-{$request->month}.pdf";
+
+        return $pdf->stream($filename);
+    }
 }

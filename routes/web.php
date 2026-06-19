@@ -67,6 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/monthly-pdf', [BuyReportController::class, 'monthly'])->name('monthly-pdf');
         Route::get('/supplier-material-summary-pdf', [BuyReportController::class, 'supplierMaterialSummary'])->name('supplier-material-summary-pdf');
         Route::get('/vehicle-summary-pdf', [BuyReportController::class, 'monthlyVehicleSummary'])->name('vehicle-summary-pdf');
+        Route::get('/monthly-vehicle-report-pdf', [BuyReportController::class, 'monthlyVehicleReport'])->name('monthly-vehicle-report-pdf');
         Route::get('/daily-vehicle-summary-pdf', [BuyReportController::class, 'dailyVehicleSummary'])->name('daily-vehicle-summary-pdf');
     });
 });
