@@ -128,6 +128,14 @@
                 </tr>
             @endforelse
         </tbody>
+        @if($buy_receipts->count() > 0)
+        <tfoot>
+            <tr>
+                <th colspan="7" class="text-right" style="font-size: 11px;">TOTAL NET WEIGHT</th>
+                <th class="text-right" style="font-size: 11px;">{{ number_format($totalWeight) }}</th>
+            </tr>
+        </tfoot>
+        @endif
     </table>
 
     @if($buy_receipts->count() > 0)
