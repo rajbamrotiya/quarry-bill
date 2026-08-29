@@ -14,7 +14,7 @@ new #[Title('Material Types')] class extends Component {
     #[Url]
     public string $search = '';
 
-    public function delete(MaterialType $materialType): void
+    /*public function delete(MaterialType $materialType): void
     {
         if ($materialType->receipts()->exists()) {
             Flux::toast(__('Cannot delete material type as it is linked to existing receipts.'), variant: 'danger');
@@ -24,7 +24,7 @@ new #[Title('Material Types')] class extends Component {
         $materialType->delete();
 
         Flux::toast(__('Material type deleted successfully.'));
-    }
+    }*/
 
     #[Computed]
     public function materialTypes()
@@ -72,8 +72,8 @@ new #[Title('Material Types')] class extends Component {
                         <flux:table.cell class="px-6">
                             <div class="flex justify-end gap-2">
                                 <flux:button icon="pencil-square" variant="ghost" size="sm" :href="route('material-types.edit', $type)" wire:navigate />
-                                
-                                <flux:modal.trigger name="delete-material-{{ $type->id }}">
+
+                                {{--<flux:modal.trigger name="delete-material-{{ $type->id }}">
                                     <flux:button icon="trash" variant="ghost" size="sm" />
                                 </flux:modal.trigger>
 
@@ -92,7 +92,7 @@ new #[Title('Material Types')] class extends Component {
                                             <flux:button type="submit" variant="danger" wire:click="delete({{ $type->id }})">{{ __('Delete') }}</flux:button>
                                         </div>
                                     </div>
-                                </flux:modal>
+                                </flux:modal>--}}
                             </div>
                         </flux:table.cell>
                     </flux:table.row>

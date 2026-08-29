@@ -14,12 +14,12 @@ new #[Title('Users')] class extends Component {
     #[Url]
     public string $search = '';
 
-    public function delete(User $user): void
+    /*public function delete(User $user): void
     {
         $user->delete();
 
         Flux::toast(__('User deleted successfully.'));
-    }
+    }*/
 
     #[Computed]
     public function users()
@@ -67,7 +67,7 @@ new #[Title('Users')] class extends Component {
                         <flux:table.cell class="px-6">
                             <div class="flex justify-end gap-2">
                                 <flux:button icon="pencil-square" variant="ghost" size="sm" :href="route('users.edit', $user)" wire:navigate />
-                                <flux:modal.trigger name="delete-user-{{ $user->id }}">
+                                {{--<flux:modal.trigger name="delete-user-{{ $user->id }}">
                                     <flux:button icon="trash" variant="ghost" size="sm" />
                                 </flux:modal.trigger>
 
@@ -86,7 +86,7 @@ new #[Title('Users')] class extends Component {
                                             <flux:button type="submit" variant="danger" wire:click="delete({{ $user->id }})">{{ __('Delete') }}</flux:button>
                                         </div>
                                     </div>
-                                </flux:modal>
+                                </flux:modal>--}}
                             </div>
                         </flux:table.cell>
                     </flux:table.row>

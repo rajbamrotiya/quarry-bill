@@ -14,12 +14,12 @@ new #[Title('Suppliers')] class extends Component {
     #[Url]
     public string $search = '';
 
-    public function delete(Supplier $supplier): void
+    /*public function delete(Supplier $supplier): void
     {
         $supplier->delete();
 
         Flux::toast(__('Supplier deleted successfully.'));
-    }
+    }*/
 
     #[Computed]
     public function suppliers()
@@ -83,7 +83,7 @@ new #[Title('Suppliers')] class extends Component {
                             <div class="flex justify-end gap-2">
                                 <flux:button icon="eye" variant="ghost" size="sm" :href="route('suppliers.show', $supplier)" wire:navigate />
                                 <flux:button icon="pencil-square" variant="ghost" size="sm" :href="route('suppliers.edit', $supplier)" wire:navigate />
-                                <flux:modal.trigger name="delete-supplier-{{ $supplier->id }}">
+                                {{--<flux:modal.trigger name="delete-supplier-{{ $supplier->id }}">
                                     <flux:button icon="trash" variant="ghost" size="sm" />
                                 </flux:modal.trigger>
 
@@ -102,7 +102,7 @@ new #[Title('Suppliers')] class extends Component {
                                             <flux:button type="submit" variant="danger" wire:click="delete({{ $supplier->id }})">{{ __('Delete') }}</flux:button>
                                         </div>
                                     </div>
-                                </flux:modal>
+                                </flux:modal>--}}
                             </div>
                         </flux:table.cell>
                     </flux:table.row>
