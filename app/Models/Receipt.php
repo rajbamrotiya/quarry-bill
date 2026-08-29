@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Receipt extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'client_id',
@@ -74,7 +75,7 @@ class Receipt extends Model
                 ];
             }
 
-            if (! empty($changes)) {
+            if (!empty($changes)) {
                 $receipt->histories()->create([
                     'user_id' => auth()->id(),
                     'event' => 'updated',
@@ -88,22 +89,22 @@ class Receipt extends Model
                 $date = $receipt->date ? Carbon::parse($receipt->date) : now();
                 $prefix = $date->format('Y/m/');
 
-                $lastReceipt = Receipt::where('pass_number', 'like', $prefix.'%')
+                $lastReceipt = Receipt::where('pass_number', 'like', $prefix . '%')
                     ->orderBy('pass_number', 'desc')
                     ->first();
 
                 $nextNumber = 1;
                 if ($lastReceipt) {
-                    $lastNumber = (int) substr($lastReceipt->pass_number, strlen($prefix));
+                    $lastNumber = (int)substr($lastReceipt->pass_number, strlen($prefix));
                     $nextNumber = $lastNumber + 1;
                 }
 
-                $receipt->pass_number = $prefix.str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+                $receipt->pass_number = $prefix . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
             }
         });
 
         static::saving(function (Receipt $receipt) {
-            $receipt->net_weight = max(0, (int) $receipt->gross_weight - (int) $receipt->tare_weight);
+            $receipt->net_weight = max(0, (int)$receipt->gross_weight - (int)$receipt->tare_weight);
         });
     }
 }
