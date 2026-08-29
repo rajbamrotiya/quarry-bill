@@ -17,7 +17,7 @@
         }
         .receipt-container {
             width: 100%;
-            height: 310px;
+            height: 320px;
             margin-bottom: 2px;
             position: relative;
             margin-top: 10px;
